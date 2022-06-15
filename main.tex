@@ -1,0 +1,90 @@
+\documentclass{article}
+\usepackage{amsfonts}
+\usepackage{enumitem}
+
+\title{Eluvio Content Fabric V2 Spec}
+\date{2022}
+
+\begin{document}
+
+\maketitle
+
+\input{ids}
+
+\setcounter{section}{-1}
+\section{Definitions}
+\begin{description}
+  \item[Node] A server which stores and serves parts.
+  \item[Provider] An individual or organization which owns, secures, and operates nodes.
+  \item[Tenant] An individual or organization which owns content.
+  \item[Content] A piece of data which is owned by a tenant.
+  \item[Space] A group of providers, provider nodes, and tenants, where providers agree to run nodes which store content owned by a tenant according to a common set of rules.
+  \item[Part] A part is a sequence of bytes stored in the space, referenced by its hash. 
+  \item[Content Object Version] A collection of parts created by a tenant, referenced by its hash.
+  \item[Content Object] A collection of versions.
+  \item[Library] A 'folder' of content objects owned by a tenant with a permission structure that determines who within a tenancy is able to create/modify/delete content objects and content object versions.
+  \item[KMS] A tenant-owned server which holds keys for encrypting/decrypting content which the tenant stores in the space.
+  \item[Blockchain] A distributed ledger responsible for orchestrating cooperation between providers, the exchange of value between providers and tenants, and governance that determines the rules of a space.
+\end{description}
+
+The following entities are defined by fixed length identifiers as follows:
+\begin{center}
+  \begin{tabular}{| c | l | l |}
+    \hline
+    Entity & Identifier & Type \\
+    \hline 
+    Node & $\nodeid$ & Fixed length byte string \\
+    Space & $\spaceid$ & Fixed length byte string \\
+    Content Object & $\conqid$ & Fixed length byte string \\
+    Content Object Version & $\versid$ & Fixed length byte string \\
+    KMS & $\kmsid$ & Fixed length byte string \\
+    Library & $\libid$ & Fixed length byte string \\
+    \hline 
+  \end{tabular}
+\end{center}
+
+\pagebreak
+\section{Space}
+
+The space functions as the top level governance structure of the fabric that orchestrates how providers cooperate to serve tenant data. 
+
+Spaces are identified by a fixed length $\spaceid$.
+
+\subsection{Space rules}
+\begin{description}
+  \item[Provider Bond] An amount, $\bond{prov}$, of currency each provider must lock up in order to participate within the space. Funds can be slashed from here if a provider misbehaves.
+\end{description}
+
+\section{Provider}
+
+A provider is a logical group of nodes within a space, and a permission structure for keys.
+When a provider is created, it is bootstrapped with an admin key $\keyid{admin}$ that has total control of the provider.
+
+\subsection{Permissions}
+Provider keys have the following permission levels, from most to least privileged
+
+\begin{enumerate}
+  \item $\perm{root}$ can do everything
+  \item $\perm{admin}$ can add/remove nodes, bill tenants
+  \item $\perm{node}$ can co-author versions with tenants
+\end{enumerate}
+
+\subsection{Blockchain actions}
+\begin{description}
+  \item[Create Provider($\keyid{origin} = \keyid{admin}, \spaceid, \provid$)] Creates the provider
+    \begin{itemize}
+      \item TODO: check governance to see whether origin can create a provider
+      \item Creates $\provid$ and sets its space to $\spaceid$
+      \item Sets $\keyid{admin}$ as the creator of $\provid$
+      \item Sets $\keyid{admin}$ as a key for $\provid$ with level $\perm{root}$
+      \item Bonds $\bond{prov}$ from $\keyid{admin}$ to the space under $\provid$
+    \end{itemize}
+  \item[Add Node($\keyid{origin}, \provid, \nodeid, \keyid{node}, \loc{node}$)] adds a node
+    \begin{itemize}
+      \item Checks that $\keyid{origin}$ has permission $\perm{admin}$ or above for $\provid$.
+      \item Creates a node $\nodeid$ with locator $\loc{node}$
+      \item Registers $\keyid{node}$ to $\provid$ with permission level $\perm{node}$ \footnote{Should this error if the key already exists within the permissions scheme?}
+    \end{itemize}
+\end{description}
+
+\end{document}
