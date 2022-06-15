@@ -43,16 +43,17 @@ The following entities are defined by fixed length identifiers as follows:
   \end{tabular}
 \end{center}
 
-\pagebreak
 \section{Space}
 
 The space functions as the top level governance structure of the fabric that orchestrates how providers cooperate to serve tenant data. 
-
-Spaces are identified by a fixed length $\spaceid$.
+Governance is TBD.
 
 \subsection{Space rules}
 \begin{description}
   \item[Provider Bond] An amount, $\bond{prov}$, of currency each provider must lock up in order to participate within the space. Funds can be slashed from here if a provider misbehaves.
+  \item[Tenant Bond] An amount, $\bond{ten}$, of currency each tenant must lock up in order to participate within the space. Funds can be slashed from here if a tenant misbehaves.
+  \item[SLAs] Specifications for availability requirements provider nodes must have.
+  \item[Partition number] The partitioning constant for part storage
 \end{description}
 
 \section{Provider}
@@ -60,31 +61,83 @@ Spaces are identified by a fixed length $\spaceid$.
 A provider is a logical group of nodes within a space, and a permission structure for keys.
 When a provider is created, it is bootstrapped with an admin key $\keyid{admin}$ that has total control of the provider.
 
-\subsection{Permissions}
+\subsection{Provider Permissions}
 Provider keys have the following permission levels, from most to least privileged
 
 \begin{enumerate}
   \item $\perm{root}$ can do everything
   \item $\perm{admin}$ can add/remove nodes, bill tenants
-  \item $\perm{node}$ can co-author versions with tenants
+  \item $\perm{node}$ can co-author versions with tenants and mark nodes as no longer pending
 \end{enumerate}
 
 \subsection{Blockchain actions}
+In addition to setting permissions on keys, we have the following actions
 \begin{description}
-  \item[Create Provider($\keyid{origin} = \keyid{admin}, \spaceid, \provid$)] Creates the provider
+  \item[CreateProvider($\keyid{origin} = \keyid{root}, \spaceid, \provid$)] Creates the provider
     \begin{itemize}
       \item TODO: check governance to see whether origin can create a provider
       \item Creates $\provid$ and sets its space to $\spaceid$
-      \item Sets $\keyid{admin}$ as the creator of $\provid$
-      \item Sets $\keyid{admin}$ as a key for $\provid$ with level $\perm{root}$
-      \item Bonds $\bond{prov}$ from $\keyid{admin}$ to the space under $\provid$
+      \item Sets $\keyid{root}$ as the creator of $\provid$
+      \item Sets $\keyid{root}$ as a key for $\provid$ with level $\perm{root}$
+      \item Bonds $\bond{prov}$ from $\keyid{root}$ to the space under $\provid$
     \end{itemize}
-  \item[Add Node($\keyid{origin}, \provid, \nodeid, \keyid{node}, \loc{node}$)] adds a node
+  \item[AddNode($\keyid{origin}, \provid, \nodeid, \keyid{node}, \loc{node}$)] adds a node
     \begin{itemize}
       \item Checks that $\keyid{origin}$ has permission $\perm{admin}$ or above for $\provid$.
       \item Creates a node $\nodeid$ with locator $\loc{node}$
       \item Registers $\keyid{node}$ to $\provid$ with permission level $\perm{node}$ \footnote{Should this error if the key already exists within the permissions scheme?}
+      \item Marks the node as pending while it syncs up parts with the rest of the space
     \end{itemize}
+  \item[ConfirmNode($\keyid{origin}, \provid, \nodeid$)] marks a node as no longer pending
+    \begin{itemize}
+      \item Checks that $\keyid{origin}$ has permissions $\perm{node}$ or above for $\provid$
+      \item Sets $\nodeid$ to no longer pending
+    \end{itemize}
+  \item[RemoveNode($\keyid{origin}, \provid, \nodeid$)] removes a node
+    \begin{itemize}
+      \item Checks that $\keyid{origin}$ has permissions $\perm{admin}$ or above for $\provid$
+      \item Removes all $\nodeid$ information from the space and provider
+    \end{itemize}
+  \item[BillTenant] TODO
+\end{description}
+
+\section{Tenant}
+
+A tenant is an owner of content, responsible for providing a service which manages keys which encrypt content to providers.
+
+
+\subsection{Tenant Permissions}
+Tenant keys have the following permission levels, from most to least privileged
+
+\begin{enumerate}
+  \item $\perm{root}$ can add/remove admins
+  \item $\perm{admin}$ can add/remove kmses, add/remove users to/from libraries
+  \item $\perm{kms}$ can co-author content object versions with provider nodes
+\end{enumerate}
+
+\subsection{Blockchain Actions}
+
+\begin{description}
+  \item[CreateTenant($\keyid{origin} = \keyid{root}, \spaceid, \tenantid)$] creates a tenancy
+    \begin{itemize}
+      \item TODO: check governance to see whether origin can create a tenant
+      \item Creates $\tenantid$ and sets its space to $\spaceid$
+      \item Sets $\keyid{root}$ as the creator of $\tenantid$
+      \item Sets $\keyid{root}$ as a key for $\tenantid$ with level $\perm{root}$
+      \item Bonds $\bond{ten}$ from $\keyid{root}$ to the space under $\tenantid$
+    \end{itemize}
+  \item[AddKMS($\keyid{origin}, \tenantid, \kmsid, \keyid{kms}, \loc{kms}$)] creates a kms
+    \begin{itemize}
+      \item Checks that $\keyid{origin}$ has permission $\perm{admin}$ or above for $\tenantid$.
+      \item Creates a node $\kmsid$ with locator $\loc{kms}$
+      \item Registers $\keyid{kms}$ to $\tenantid$ with permission level $\perm{kms}$
+    \end{itemize}
+  \item[RemoveKMS($\keyid{origin}, \tenantid, \kmsid$)] removes a node
+    \begin{itemize}
+      \item Checks that $\keyid{origin}$ has permissions $\perm{admin}$ or above for $\tenantid$
+      \item Removes all $\kmsid$ information from the space and tenancy
+    \end{itemize}
+  \item[TODO: Remove Tenant, Top up billing balance]
 \end{description}
 
 \end{document}
