@@ -82,15 +82,15 @@ Provider keys have the following permission levels, from most to least privilege
     \end{itemize}
 \end{enumerate}
 
-\subsection{Blockchain actions}
+\subsection{Provider blockchain actions}
 In addition to setting permissions on keys, we have the following actions
 \begin{description}
-  \item[CreateProvider($\keyid{origin} = \keyid{root}, \spaceid, \provid$)] Creates the provider
+  \item[CreateProvider($\keyid{origin}, \spaceid, \provid$)] Creates the provider
     \begin{itemize}
-      \item TODO: check governance to see whether origin can create a provider
+      \item Check governance to see whether origin can create a provider
       \item Creates $\provid$ and sets its space to $\spaceid$
-      \item Sets $\keyid{root}$ as the creator of $\provid$
-      \item Sets $\keyid{root}$ as a key for $\provid$ with level $\perm{root}$
+      \item Sets $\keyid{origin}$ as the root key ($\keyid{root}$) of $\provid$
+      \item Sets $\keyid{origin}$ as a key for $\provid$ with level $\perm{root}$
       \item Bonds $\bond{prov}$ from $\keyid{root}$ to the space under $\provid$
     \end{itemize}
   \item[AddNode($\keyid{origin}, \provid, \nodeid, \keyid{node}, \loc{node}$)] adds a node
@@ -115,7 +115,7 @@ In addition to setting permissions on keys, we have the following actions
 
 \section{Tenants}
 
-A tenant is an owner of content, responsible for providing a service which manages keys which encrypt content to providers.
+A tenant is an owner and creator of content. They are responsible for providing a service available to providers' nodes which can manage keys and encrypt/decrypt content.
 
 
 \subsection{Tenant Permissions}
@@ -123,16 +123,16 @@ Tenant keys have the following permission levels, from most to least privileged
 
 \begin{enumerate}
   \item $\perm{root}$ can add/remove admins
-  \item $\perm{admin}$ can add/remove kmses, add/remove users to/from libraries
+  \item $\perm{admin}$ can add/remove kmses, create libraries, and add/remove users from libraries
   \item $\perm{kms}$ can co-author content object versions with provider nodes
 \end{enumerate}
 
-\subsection{Blockchain Actions}
+\subsection{Tenant Blockchain Actions}
 
 \begin{description}
   \item[CreateTenant($\keyid{origin} = \keyid{root}, \spaceid, \tenantid)$] creates a tenancy
     \begin{itemize}
-      \item TODO: check governance to see whether origin can create a tenant
+      \item Checks governance to see whether origin can create a tenant
       \item Creates $\tenantid$ and sets its space to $\spaceid$
       \item Sets $\keyid{root}$ as the creator of $\tenantid$
       \item Sets $\keyid{root}$ as a key for $\tenantid$ with level $\perm{root}$
@@ -141,20 +141,47 @@ Tenant keys have the following permission levels, from most to least privileged
   \item[AddKMS($\keyid{origin}, \tenantid, \kmsid, \keyid{kms}, \loc{kms}$)] creates a kms
     \begin{itemize}
       \item Checks that $\keyid{origin}$ has permission $\perm{admin}$ or above for $\tenantid$.
-      \item Creates a node $\kmsid$ with locator $\loc{kms}$
+      \item Creates a KMS $\kmsid$ within $\tenantid$ with locator $\loc{kms}$
       \item Registers $\keyid{kms}$ to $\tenantid$ with permission level $\perm{kms}$
     \end{itemize}
   \item[RemoveKMS($\keyid{origin}, \tenantid, \kmsid$)] removes a node
     \begin{itemize}
       \item Checks that $\keyid{origin}$ has permissions $\perm{admin}$ or above for $\tenantid$
       \item Removes all $\kmsid$ information from the space and tenancy
+      \item Removes $\keyid{kms}$ from $\tenantid$
     \end{itemize}
   \item[TODO: Remove Tenant, Top up billing balance]
 \end{description}
 
-\section{Key Management Services (KMSs)}
+\section{Libraries}
+Libraries group keys together which may create/modify content within a specific context. 
+They act as a way to separate the keys which manage tenant infrastructure (like KMSs) from keys which manage content.
+
+\subsection{Library Rights}
+Any \texttt{user} in a library has some associated rights, $\rights{user} \in \rightstype$. 
+The exact format of this structure is TDB (currently they're bitflags), but should at the very least be able to answer the following questions:
+
+\begin{description}
+  \item[$\adminrights{\rights{user}}$:] Is the user allowed to add other users as non-admins
+  \item[$\editrights{\rights{user}}$:]  Is the user allowed to edit content
+\end{description}
+
+\subsection{Library Blockchain Actions}
+
+\begin{description}
+  \item[CreateLibrary($\keyid{origin}, \tenantid, \libid, \textnormal{name}$)] creates a library
+    \begin{itemize}
+      \item Checks the origin has permission $\perm{admin}$ within $\tenantid$
+      \item Creates a library with $\libid$ and the given name within $\tenantid$
+      \item Initialize the tenant as a library admin by setting $\rights{origin}$ such that $\adminrights{\rights{origin}}$ is true
+    \end{itemize}
+  \item[SetRights($\keyid{origin}, \tenantid, \libid, \keyid{target}, \rights{target}$)]
+\end{description}
 
 \section{Content Objects}
+
+\section{Key Management Services (KMSs)}
+
 
 
 \section{Part networking}
