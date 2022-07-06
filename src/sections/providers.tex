@@ -1,0 +1,55 @@
+\section{Providers}
+
+A provider is a logical group of nodes within a space, and a permission structure for keys.
+
+\subsection{Provider Permissions}
+Provider keys have the following permission levels, from most to least privileged
+
+\begin{enumerate}
+  \item $\perm{root}$ Root level
+    \begin{itemize}
+      \item add/remove admins (effectively allows for admin key rotation)
+    \end{itemize}
+  \item $\perm{admin}$ Admin level
+    \begin{itemize}
+      \item add/remove nodes
+      \item bill tenants
+    \end{itemize}
+  \item $\perm{node}$ Node level
+    \begin{itemize}
+      \item Co-author versions with tenants
+      \item Mark itself as no longer pending
+      \item Participate in part networking
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Provider blockchain actions}
+In addition to setting permissions on keys, we have the following actions
+\begin{description}
+  \item[CreateProvider($\keyid{origin}, \spaceid, \provid$)] Creates the provider
+    \begin{itemize}
+      \item Check governance to see whether origin can create a provider
+      \item Creates $\provid$ and sets its space to $\spaceid$
+      \item Sets $\keyid{origin}$ as the root key ($\keyid{root}$) of $\provid$
+      \item Sets $\keyid{origin}$ as a key for $\provid$ with level $\perm{root}$
+      \item Bonds $\bond{prov}$ from $\keyid{root}$ to the space under $\provid$
+    \end{itemize}
+  \item[AddNode($\keyid{origin}, \provid, \nodeid, \keyid{node}, \loc{node}$)] adds a node
+    \begin{itemize}
+      \item Checks that $\keyid{origin}$ has permission $\perm{admin}$ or above for $\provid$.
+      \item Creates a node $\nodeid$ with locator $\loc{node}$
+      \item Registers $\keyid{node}$ to $\provid$ with permission level $\perm{node}$ \footnote{Should this error if the key already exists within the permissions scheme?}
+      \item Marks the node as pending while it syncs up parts with the rest of the space
+    \end{itemize}
+  \item[ConfirmNode($\keyid{origin}, \provid, \nodeid$)] marks a node as no longer pending
+    \begin{itemize}
+      \item Checks that $\keyid{origin}$ has permissions $\perm{node}$ or above for $\provid$
+      \item Sets $\nodeid$ to no longer pending
+    \end{itemize}
+  \item[RemoveNode($\keyid{origin}, \provid, \nodeid$)] removes a node
+    \begin{itemize}
+      \item Checks that $\keyid{origin}$ has permissions $\perm{admin}$ or above for $\provid$
+      \item Removes all $\nodeid$ information from the space and provider
+    \end{itemize}
+  \item[BillTenant] TODO
+\end{description}
