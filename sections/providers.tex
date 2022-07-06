@@ -28,8 +28,8 @@ Provider keys have the following permission levels, from most to least privilege
 Keys with a higher level may set the permission level of any keys strictly below it. 
 For example, a key with $\perm{root}$ may give other keys $\perm{admin}$, but $\perm{admin}$ keys may not give other keys $\perm{admin}$ or change the rights of a key with $\perm{admin}$
 
-\subsection{Provider blockchain actions}
-In addition to setting permissions on keys, we have the following actions
+\subsection{Provider Blockchain Calls}
+In addition to setting permissions on keys, we have the following calls
 \begin{description}
   \item[CreateProvider($\keyid{origin}, \spaceid, \provid$)] Creates the provider
     \begin{itemize}

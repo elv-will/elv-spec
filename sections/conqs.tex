@@ -1,12 +1,64 @@
 \section{Content Objects}
-Content objects are the main way tenants store and retrieve data.
-They are created by communicating with a node, creating a draft, and then when the tenant is ready to commit to a version of that content object they provide the node with a signed blob.
-The node then submits a \textbf{CommitVersion} call on chain which stores the hash of the data, a flag showing the commit as pending, and some additional metadata.
+Content objects are the main way tenants store and retrieve data, globally referenced by $(\tenantid, \conqid)$.
+They are created by storing data in a node, who calls \textbf{CommitVersion} with a digest of the data.
 Once the verison is commited, other nodes in the space can retrieve the content object.
 Once a sufficient number of nodes retrieve copies of the content object, %TODO: talk about partitioning and how we assert data is replicated
 the original authoring node submits a \textbf{ConfirmVersion} which marks the commit as finalized.
 
+In order to prevent nodes from creating arbitrary versions without permission of tenants, a version commit message ($\commitmsg$) and signature $\sig{\commitmsg}$ by a tenant must be provided in the \textbf{CommitVersion} call.
+A $\commitmsg$ contains the following:
+TODO: nicer formatting
+\begin{verbatim}
+  VersionCreateMessage {
+    originator: ProviderId,
+    tenant_id: TenantId,
+    content_object_id: ContentObjectId,
+    tlp_size: compact uint,
+    digest: VersionId,
+    ts: u64,
+  }
+\end{verbatim}
+
+\subsection{Content Objects and Libraries}
+Libraries are the permission structure that describes who can create content objects and content object versions.
+Upon creation, an $\option{\libid}$ field is specified. 
+If that field is $\Some{\libid}$, then any key $k$ for which $\editrights{\rights{k}}$ can create/modify versions.
+Otherwise, if $\libid$ is $\None$, then only keys with at least $\perm{admin}$ in $\tenantid$ can create/modify versions.
+This makes libraries an optional component: if you want to use them, set them up with the proper keys and use them.
+If you'd like to ignore them, you can just use your tenant admin keys for creating/modifying content.
+
+It's helpful to picture libraries as a filesystem with one level of folders:
+
+\dirtree{%
+  .1 Content Objects.
+  .2 Content Object 1 \hspace{2em} $\leftarrow$ Operated by tenant admins.
+  .2 Content Object 2 \hspace{2em} $\leftarrow$ Operated by tenant admins.
+  .2 Library 1.
+  .3 Content Object 3 \hspace{0.67em} $\leftarrow$ Operated by Library 1 admins.
+  .3 Content Object 4 \hspace{0.67em} $\leftarrow$ Operated by Library 1 admins.
+  .2 Library 2.
+  .3 Content Object 5 \hspace{0.67em} $\leftarrow$ Operated by Library 2 admins.
+  .3 Content Object 6 \hspace{0.67em} $\leftarrow$ Operated by Library 2 admins.
+}
+
+Content objects are universally referred to by $(\tenantid, \conqid)$, hence they can be moved between libraries.
+A sample use case would be to have one library for staging and one for production.
+
+\dirtree{%
+  .1 Content Objects.
+  .2 Staging Library.
+  .3 Staging Movie A $\leftarrow$ Can move to production when finished.
+  .3 Staging Movie B.
+  .2 Production Library $\leftarrow$ Things served to end users.
+  .3 Public Production Movie C \hspace{0.67em}.
+}
+
+Loosely protected staging keys can be assigned to modify staging content only viewed internally in the tenancy.
+When the content is ready for production, a tenant admin (or similar role) can move the content from the staging library in to the production library, where keys are much more closely guarded.
+
+
 \subsection{Content Object Lifecycle}
+TODO(WILL): I'm sure there's more to this lifecycle
 
 \begin{tikzpicture}[
   ->,
@@ -21,9 +73,42 @@ the original authoring node submits a \textbf{ConfirmVersion} which marks the co
   % Lines
   \path (draftcreated) edge node[right] {Write token given to tenant} (modifydraft);
   \path (modifydraft) edge[loop right] node[right] {Content modified with write token} (modifydraft);
-  \path (modifydraft) edge node[right] {Tenant agrees to finalize version, signs $\texttt{VerCreateMsg}$ for node} (draftfinalized);
-  \path (draftfinalized) edge node[right] {Node calls \textbf{CommitVersion} with provided $\texttt{VerCreateMsg}$} (commitversion);
+  \path (modifydraft) edge node[right] {Tenant agrees to finalize version, signs $\sig{\commitmsg}$ for node} (draftfinalized);
+  \path (draftfinalized) edge node[right] {Node calls \textbf{CommitVersion} with provided $\sig{\commitmsg}$} (commitversion);
   \path (commitversion) edge node[right] {Node sends copies to peers} (distversion);
   \path (distversion) edge node[right] {Submit \textbf{FinalizeVersion}} (finalizeversion);
   \path (distversion) edge[loop right] node[right] {Retry part distribution if failed} (distversion);
 \end{tikzpicture}
+
+\subsection{Content Types}
+TODO: Discuss
+
+\subsection{Content Object Blockchain Calls}
+
+\begin{description}
+  \item[CreateContentObject($\keyid{origin}, \tenantid, \conqid, \option{\libid}$)] \phantom{}
+    \begin{itemize}
+      \item If $\option{\libid} = \None$, checks that $\keyid{origin}$ has at least $\perm{admin}$ in $\tenantid$
+      \item Otherwise, if $\option{\libid} = \Some{\libid}$, checks that $\keyid{origin}$ has $\editrights{\rights{origin}}$
+      \item Registers $\conqid$ with its associated $\option{\libid}$ to $\tenantid$, 
+    \end{itemize}
+
+  \item[CommitVersion($\keyid{origin}, \tenantid, \conqid, \commitmsg, \keyid{signer}, \sig{\keyid{signer}, \commitmsg}$)] \phantom{}
+    \begin{itemize}
+      \item Checks that $\keyid{origin}$ has permission level $\perm{node}$ within the $\provid$ specified in $\commitmsg$.
+      \item Retrieve the $\option{\libid}$ for $(\tenantid, \conqid)$.
+        \begin{itemize}
+          \item If $\option{\libid} = \None$, checks that $\keyid{signer}$ has at least \newline $\perm{admin}$ in $\tenantid$
+          \item Otherwise, if $\option{\libid} = \Some{\libid}$, checks that $\keyid{signer}$ has $\editrights{\rights{origin}}$
+        \end{itemize}
+      \item Checks that $\sig{\keyid{signer}}$ is a valid signature of $\commitmsg$
+      \item Stores the version $\versid$ with the relevant metadata in $\commitmsg$ and a pending flag
+    \end{itemize}
+
+  \item[FinalizeVersion($\keyid{origin}, \provid, \tenantid, \conqid, \versid$)] \phantom{}
+    \begin{itemize}
+      \item Checks that $\keyid{origin}$ has permission level $\perm{node}$ within $\provid$.
+      \item Checks that $\provid$ matches the $\provid$ stored in the metadata of $(\tenantid, \conqid, \versid)$
+      \item Removes the pending flag from $(\tenantid, \conqid, \versid)$
+    \end{itemize}
+\end{description}

@@ -18,12 +18,12 @@ The following entities are defined by fixed length identifiers as follows:
     \hline
     Entity & Identifier & Substrate Type \\
     \hline 
-    Node & $\nodeid$ & 10-byte array \\
+    Node & $\nodeid$ & 10-byte array \\ %TODO: Could just be an unsigned 32-bit integer and do some round robin or mod-magic for assigning partitions
     Space & $\spaceid$ & 10-byte array \\
     Content Object & $\conqid$ & 10-byte array \\
     Content Object Version & $\versid$ & 32-byte array \\
     KMS & $\kmsid$ & 10-byte array \\
-    Library & $\libid$ & 10-byte array \\
+    Library & $\libid$ & unsigned 16-bit integer \\
     \hline 
   \end{tabular}
 \end{center}
