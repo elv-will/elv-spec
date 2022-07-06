@@ -156,6 +156,9 @@ Tenant keys have the following permission levels, from most to least privileged
 \section{Libraries}
 Libraries group keys together which may create/modify content within a specific context. 
 They act as a way to separate the keys which manage tenant infrastructure (like KMSs) from keys which manage content.
+The goal of the library is to have different levels of keys and different rules for different groups of content.
+For example, one library could hold staging content which is not publicly accessible outside of library owners.
+Content could be created there and then moved to a production library which has greater visibility.
 
 \subsection{Library Rights}
 Any \texttt{user} in a library has some associated rights, $\rights{user} \in \rightstype$. 
@@ -173,16 +176,28 @@ The exact format of this structure is TDB (currently they're bitflags), but shou
     \begin{itemize}
       \item Checks the origin has permission $\perm{admin}$ within $\tenantid$
       \item Creates a library with $\libid$ and the given name within $\tenantid$
-      \item Initialize the tenant as a library admin by setting $\rights{origin}$ such that $\adminrights{\rights{origin}}$ is true
+        \begin{itemize}
+          \item Note that for convenience, this call could also set $\rights{origin}$ such that $\adminrights{\rights{origin}}$ is true
+        \end{itemize}
     \end{itemize}
-  \item[SetRights($\keyid{origin}, \tenantid, \libid, \keyid{target}, \rights{target}$)]
+  \item[SetRights($\keyid{origin}, \tenantid, \libid, \keyid{target}, \rights{target}$)] sets rights as a library admin
+    \begin{itemize}
+      \item Check that $\adminrights{\rights{origin}}$ 
+      \item Checks that $!\adminrights{\rights{target}}$
+      \item Sets the rights of $\keyid{target}$ in $\libid$ to $\rights{target}$
+    \end{itemize}
+  \item[TenantSetRights($\keyid{origin}, \tenantid, \libid, \keyid{target}, \rights{target}$)] sets rights as a tenant admin
+    \begin{itemize}
+      \item Check that $\keyid{origin}$ has $\perm{admin}$ in $\tenantid$
+      \item Sets the rights of $\keyid{target}$ in $\libid$ to $\rights{target}$
+    \end{itemize}
 \end{description}
+
+This also provides a way for other parts of the blockchain if a given key has edit access to a library.
 
 \section{Content Objects}
 
 \section{Key Management Services (KMSs)}
-
-
 
 \section{Part networking}
 TODO: @Serban
