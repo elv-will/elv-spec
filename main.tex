@@ -1,6 +1,8 @@
 \documentclass{article}
 \usepackage{amsfonts}
 \usepackage{enumitem}
+\usepackage{tikz}
+\usetikzlibrary{positioning}
 
 \title{Eluvio Content Fabric V2 Spec}
 \author{Eluvio}
@@ -10,196 +12,16 @@
 
 \maketitle
 
-\input{ids}
+\include{ids}
 
 \setcounter{section}{-1}
-\section{Definitions}
-\begin{description}
-  \item[Node] A server which stores and serves parts.
-  \item[Provider] An individual or organization which owns, secures, and operates nodes.
-  \item[Tenant] An individual or organization which owns content.
-  \item[Content] A piece of data which is owned by a tenant.
-  \item[Space] A group of providers, provider nodes, and tenants, where providers agree to run nodes which store content owned by a tenant according to a common set of rules.
-  \item[Part] A part is a sequence of bytes stored in the space, referenced by its hash. 
-  \item[Content Object Version] A collection of parts created by a tenant, referenced by its hash.
-  \item[Content Object] A collection of versions.
-  \item[Library] A 'folder' of content objects owned by a tenant with a permission structure that determines who within a tenancy is able to create/modify/delete content objects and content object versions.
-  \item[KMS] A tenant-owned server which holds keys for encrypting/decrypting content which the tenant stores in the space.
-  \item[Blockchain] A distributed ledger responsible for orchestrating cooperation between providers, the exchange of value between providers and tenants, and governance that determines the rules of a space.
-\end{description}
-
-The following entities are defined by fixed length identifiers as follows:
-\begin{center}
-  \begin{tabular}{| c | l | l |}
-    \hline
-    Entity & Identifier & Type \\
-    \hline 
-    Node & $\nodeid$ & Fixed length byte string \\
-    Space & $\spaceid$ & Fixed length byte string \\
-    Content Object & $\conqid$ & Fixed length byte string \\
-    Content Object Version & $\versid$ & Fixed length byte string \\
-    KMS & $\kmsid$ & Fixed length byte string \\
-    Library & $\libid$ & Fixed length byte string \\
-    \hline 
-  \end{tabular}
-\end{center}
-
-\section{Spaces}
-
-The space functions as the top level governance structure of the fabric that orchestrates how providers cooperate to serve tenant data. 
-Governance is TBD.
-
-\subsection{Space rules}
-\begin{description}
-  \item[Provider Bond] An amount, $\bond{prov}$, of currency each provider must lock up in order to participate within the space. Funds can be slashed from here if a provider misbehaves.
-  \item[Tenant Bond] An amount, $\bond{ten}$, of currency each tenant must lock up in order to participate within the space. Funds can be slashed from here if a tenant misbehaves.
-  \item[SLAs] Specifications for availability requirements provider nodes must have.
-  \item[Partition number] The partitioning constant for part storage
-\end{description}
-
-\section{Providers}
-
-A provider is a logical group of nodes within a space, and a permission structure for keys.
-
-\subsection{Provider Permissions}
-Provider keys have the following permission levels, from most to least privileged
-
-\begin{enumerate}
-  \item $\perm{root}$ Root level
-    \begin{itemize}
-      \item add/remove admins (effectively allows for admin key rotation)
-    \end{itemize}
-  \item $\perm{admin}$ Admin level
-    \begin{itemize}
-      \item add/remove nodes
-      \item bill tenants
-    \end{itemize}
-  \item $\perm{node}$ Node level
-    \begin{itemize}
-      \item Co-author versions with tenants
-      \item Mark itself as no longer pending
-      \item Participate in part networking
-    \end{itemize}
-\end{enumerate}
-
-\subsection{Provider blockchain actions}
-In addition to setting permissions on keys, we have the following actions
-\begin{description}
-  \item[CreateProvider($\keyid{origin}, \spaceid, \provid$)] Creates the provider
-    \begin{itemize}
-      \item Check governance to see whether origin can create a provider
-      \item Creates $\provid$ and sets its space to $\spaceid$
-      \item Sets $\keyid{origin}$ as the root key ($\keyid{root}$) of $\provid$
-      \item Sets $\keyid{origin}$ as a key for $\provid$ with level $\perm{root}$
-      \item Bonds $\bond{prov}$ from $\keyid{root}$ to the space under $\provid$
-    \end{itemize}
-  \item[AddNode($\keyid{origin}, \provid, \nodeid, \keyid{node}, \loc{node}$)] adds a node
-    \begin{itemize}
-      \item Checks that $\keyid{origin}$ has permission $\perm{admin}$ or above for $\provid$.
-      \item Creates a node $\nodeid$ with locator $\loc{node}$
-      \item Registers $\keyid{node}$ to $\provid$ with permission level $\perm{node}$ \footnote{Should this error if the key already exists within the permissions scheme?}
-      \item Marks the node as pending while it syncs up parts with the rest of the space
-    \end{itemize}
-  \item[ConfirmNode($\keyid{origin}, \provid, \nodeid$)] marks a node as no longer pending
-    \begin{itemize}
-      \item Checks that $\keyid{origin}$ has permissions $\perm{node}$ or above for $\provid$
-      \item Sets $\nodeid$ to no longer pending
-    \end{itemize}
-  \item[RemoveNode($\keyid{origin}, \provid, \nodeid$)] removes a node
-    \begin{itemize}
-      \item Checks that $\keyid{origin}$ has permissions $\perm{admin}$ or above for $\provid$
-      \item Removes all $\nodeid$ information from the space and provider
-    \end{itemize}
-  \item[BillTenant] TODO
-\end{description}
-
-\section{Tenants}
-
-A tenant is an owner and creator of content. They are responsible for providing a service available to providers' nodes which can manage keys and encrypt/decrypt content.
-
-
-\subsection{Tenant Permissions}
-Tenant keys have the following permission levels, from most to least privileged
-
-\begin{enumerate}
-  \item $\perm{root}$ can add/remove admins
-  \item $\perm{admin}$ can add/remove kmses, create libraries, and add/remove users from libraries
-  \item $\perm{kms}$ can co-author content object versions with provider nodes
-\end{enumerate}
-
-\subsection{Tenant Blockchain Actions}
-
-\begin{description}
-  \item[CreateTenant($\keyid{origin} = \keyid{root}, \spaceid, \tenantid)$] creates a tenancy
-    \begin{itemize}
-      \item Checks governance to see whether origin can create a tenant
-      \item Creates $\tenantid$ and sets its space to $\spaceid$
-      \item Sets $\keyid{root}$ as the creator of $\tenantid$
-      \item Sets $\keyid{root}$ as a key for $\tenantid$ with level $\perm{root}$
-      \item Bonds $\bond{ten}$ from $\keyid{root}$ to the space under $\tenantid$
-    \end{itemize}
-  \item[AddKMS($\keyid{origin}, \tenantid, \kmsid, \keyid{kms}, \loc{kms}$)] creates a kms
-    \begin{itemize}
-      \item Checks that $\keyid{origin}$ has permission $\perm{admin}$ or above for $\tenantid$.
-      \item Creates a KMS $\kmsid$ within $\tenantid$ with locator $\loc{kms}$
-      \item Registers $\keyid{kms}$ to $\tenantid$ with permission level $\perm{kms}$
-    \end{itemize}
-  \item[RemoveKMS($\keyid{origin}, \tenantid, \kmsid$)] removes a node
-    \begin{itemize}
-      \item Checks that $\keyid{origin}$ has permissions $\perm{admin}$ or above for $\tenantid$
-      \item Removes all $\kmsid$ information from the space and tenancy
-      \item Removes $\keyid{kms}$ from $\tenantid$
-    \end{itemize}
-  \item[TODO: Remove Tenant, Top up billing balance]
-\end{description}
-
-\section{Libraries}
-Libraries group keys together which may create/modify content within a specific context. 
-They act as a way to separate the keys which manage tenant infrastructure (like KMSs) from keys which manage content.
-The goal of the library is to have different levels of keys and different rules for different groups of content.
-For example, one library could hold staging content which is not publicly accessible outside of library owners.
-Content could be created there and then moved to a production library which has greater visibility.
-
-\subsection{Library Rights}
-Any \texttt{user} in a library has some associated rights, $\rights{user} \in \rightstype$. 
-The exact format of this structure is TDB (currently they're bitflags), but should at the very least be able to answer the following questions:
-
-\begin{description}
-  \item[$\adminrights{\rights{user}}$:] Is the user allowed to add other users as non-admins
-  \item[$\editrights{\rights{user}}$:]  Is the user allowed to edit content
-\end{description}
-
-\subsection{Library Blockchain Actions}
-
-\begin{description}
-  \item[CreateLibrary($\keyid{origin}, \tenantid, \libid, \textnormal{name}$)] creates a library
-    \begin{itemize}
-      \item Checks the origin has permission $\perm{admin}$ within $\tenantid$
-      \item Creates a library with $\libid$ and the given name within $\tenantid$
-        \begin{itemize}
-          \item Note that for convenience, this call could also set $\rights{origin}$ such that $\adminrights{\rights{origin}}$ is true
-        \end{itemize}
-    \end{itemize}
-  \item[SetRights($\keyid{origin}, \tenantid, \libid, \keyid{target}, \rights{target}$)] sets rights as a library admin
-    \begin{itemize}
-      \item Check that $\adminrights{\rights{origin}}$ 
-      \item Checks that $!\adminrights{\rights{target}}$
-      \item Sets the rights of $\keyid{target}$ in $\libid$ to $\rights{target}$
-    \end{itemize}
-  \item[TenantSetRights($\keyid{origin}, \tenantid, \libid, \keyid{target}, \rights{target}$)] sets rights as a tenant admin
-    \begin{itemize}
-      \item Check that $\keyid{origin}$ has $\perm{admin}$ in $\tenantid$
-      \item Sets the rights of $\keyid{target}$ in $\libid$ to $\rights{target}$
-    \end{itemize}
-\end{description}
-
-This also provides a way for other parts of the blockchain if a given key has edit access to a library.
-
-\section{Content Objects}
-
-\section{Key Management Services (KMSs)}
-
-\section{Part networking}
-TODO: @Serban
+\include{sections/defs}
+\include{sections/spaces}
+\include{sections/providers}
+\include{sections/tenants}
+\include{sections/libraries}
+\include{sections/conqs}
+\include{sections/kms}
+\include{sections/part_network}
 
 \end{document}

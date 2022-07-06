@@ -1,0 +1,25 @@
+\section{Spaces}
+
+The space functions as the top level governance structure of the fabric that orchestrates how providers cooperate to serve tenant data. 
+It is responsible for
+\begin{itemize}
+  \item Creating providers
+  \item Creating tenants
+  \item Defining rules of the space which tenants/providers agree to abide by
+  \item Reserving slashable bonds for both providers and tenants
+  \item Governance, including
+    \begin{itemize}
+      \item Admitting new tenants/providers
+      \item Removing misbehaving tenants/providers
+      \item Slashing tenants/providers
+      \item Changing rules
+    \end{itemize}
+\end{itemize}
+
+\subsection{Space rules}
+\begin{description}
+  \item[Provider Bond] An amount, $\bond{prov}$, of currency each provider must lock up in order to participate within the space. Funds can be slashed from here if a provider misbehaves.
+  \item[Tenant Bond] An amount, $\bond{ten}$, of currency each tenant must lock up in order to participate within the space. Funds can be slashed from here if a tenant misbehaves.
+  \item[SLAs] Specifications for availability requirements provider nodes must have.
+  \item[Partition number] The partitioning constant for part storage %TODO: @Serban expand
+\end{description}

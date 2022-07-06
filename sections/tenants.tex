@@ -1,0 +1,39 @@
+\section{Tenants}
+
+A tenant is an owner and creator of content. They are responsible for providing a service available to providers' nodes which can manage keys and encrypt/decrypt content.
+
+
+\subsection{Tenant Permissions}
+Tenant keys have the following permission levels, from most to least privileged
+
+\begin{enumerate}
+  \item $\perm{root}$ can add/remove admins
+  \item $\perm{admin}$ can add/remove kmses, create libraries, and add/remove users from libraries
+  \item $\perm{kms}$ can co-author content object versions with provider nodes
+\end{enumerate}
+
+\subsection{Tenant Blockchain Actions}
+
+\begin{description}
+  \item[CreateTenant($\keyid{origin} = \keyid{root}, \spaceid, \tenantid)$] creates a tenancy
+    \begin{itemize}
+      \item Checks governance to see whether origin can create a tenant
+      \item Creates $\tenantid$ and sets its space to $\spaceid$
+      \item Sets $\keyid{root}$ as the creator of $\tenantid$
+      \item Sets $\keyid{root}$ as a key for $\tenantid$ with level $\perm{root}$
+      \item Bonds $\bond{ten}$ from $\keyid{root}$ to the space under $\tenantid$
+    \end{itemize}
+  \item[AddKMS($\keyid{origin}, \tenantid, \kmsid, \keyid{kms}, \loc{kms}$)] creates a kms
+    \begin{itemize}
+      \item Checks that $\keyid{origin}$ has permission $\perm{admin}$ or above for $\tenantid$.
+      \item Creates a KMS $\kmsid$ within $\tenantid$ with locator $\loc{kms}$
+      \item Registers $\keyid{kms}$ to $\tenantid$ with permission level $\perm{kms}$
+    \end{itemize}
+  \item[RemoveKMS($\keyid{origin}, \tenantid, \kmsid$)] removes a node
+    \begin{itemize}
+      \item Checks that $\keyid{origin}$ has permissions $\perm{admin}$ or above for $\tenantid$
+      \item Removes all $\kmsid$ information from the space and tenancy
+      \item Removes $\keyid{kms}$ from $\tenantid$
+    \end{itemize}
+  \item[TODO: Remove Tenant, Top up billing balance]
+\end{description}
