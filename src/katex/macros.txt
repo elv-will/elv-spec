@@ -2,8 +2,12 @@
 \korigin:{k_\mathtt{origin}}
 \knode:{k_\mathtt{node}}
 \kroot:{k_\mathtt{root}}
+\kuser:{k_\mathtt{user}}
 \kkms:{k_\mathtt{kms}}
+\ktarget:{k_\mathtt{target}}
 \locator:{\mathsf{url}}
+\name:{\mathsf{name}}
+\rights:{\mathsf{rights}}
 
 \nodeid:{id_\mathtt{node}}
 \spaceid:{id_\mathtt{space}}
