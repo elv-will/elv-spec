@@ -1,6 +1,7 @@
 
 # Definitions
 
+Here are some definitions of entities within the system
 | Name                   | Description                                                                                                                                                                                     |
 | ---                    | ---                                                                                                                                                                                             |
 | Node                   | A server which stores and serves parts.                                                                                                                                                         |
