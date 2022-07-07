@@ -2,6 +2,7 @@
 # Definitions
 
 Here are some definitions of entities within the system
+
 | Name                   | Description                                                                                                                                                                                     |
 | ---                    | ---                                                                                                                                                                                             |
 | Node                   | A server which stores and serves parts.                                                                                                                                                         |
@@ -20,6 +21,7 @@ The following entities are identified as follows:
 
 | Entity                 | Identifier | Substrate Type          |
 | :---:                  | ---        | ---                     |
+| Provider               | $\provid$  | 10-byte array           |
 | Node                   | $\nodeid$  | 10-byte array[^1]       |
 | Space                  | $\spaceid$ | 10-byte array           |
 | Content Object         | $\conqid$  | 10-byte array           |
