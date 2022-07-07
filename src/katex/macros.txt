@@ -1,4 +1,8 @@
 \prov:{\mathtt{prov}}
+\korigin:{k_\mathtt{origin}}
+\knode:{k_\mathtt{node}}
+\kroot:{k_\mathtt{root}}
+\locator:{\mathsf{url}}
 
 \nodeid:{id_\mathtt{node}}
 \spaceid:{id_\mathtt{space}}
