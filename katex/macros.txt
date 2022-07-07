@@ -2,6 +2,7 @@
 \korigin:{k_\mathtt{origin}}
 \knode:{k_\mathtt{node}}
 \kroot:{k_\mathtt{root}}
+\kkms:{k_\mathtt{kms}}
 \locator:{\mathsf{url}}
 
 \nodeid:{id_\mathtt{node}}
