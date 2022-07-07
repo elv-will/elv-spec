@@ -1,4 +1,13 @@
 # elv-spec
-WIP Spec for the content fabric
 
-View the pdf [here](main.pdf)
+### Building
+
+Install mdbook and deps
+```
+cargo install mdbook mdbook-mermaid
+cargo install --git "https://github.com/lzanini/mdbook-katex"
+```
+Build a serve
+```
+mdbook serve
+```

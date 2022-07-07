@@ -1,0 +1,10 @@
+
+\nodeid:{id_\mathtt{node}}
+\spaceid:{id_\mathtt{space}}
+\provid:{id_\mathtt{prov}}
+\nodeid:{id_\mathtt{node}}
+\tenantid:{id_\mathtt{tenant}}
+\conqid:{id_\mathtt{conq}}
+\versid:{id_\mathtt{version}}
+\libid:{id_\mathtt{lib}}
+\kmsid:{id_\mathtt{kms}}
