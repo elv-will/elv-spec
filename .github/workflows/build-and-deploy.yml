@@ -2,6 +2,9 @@ name: Build and deploy mdbook to github pages
 
 on:
   push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
 env:
   MDBOOK_VERSION: 0.4.18
@@ -55,9 +58,6 @@ jobs:
       working-directory: elv-spec/
       env:
         MDBOOK_BUILD__CREATE_MISSING: "false" # Prevent creating missing files in SUMMARY.md
-          #MDBOOK_OUTPUT__LINKCHECK__COMMAND: "../mdbook-linkcheck"
-          #MDBOOK_PREPROCESSOR__MERMAID__COMMAND: "../mdbook-mermaid"
-          #MDBOOK_PREPROCESSOR__KATEX__COMMAND: "../mdbook-katex"
       run: |
         mdbook build
     - name: Store final build
@@ -70,32 +70,15 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
-    # Do not run this unless *pushing* to `master`
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     steps:
-    - name: Checkout elv-spec/gh-pages
-      uses: actions/checkout@v2
-      with:
-        path: elv-spec 
-        ref: gh-pages
-
-    - name: Delete all current files
-      run: |
-        rm -vrf elv-spec/*
     - name: Unpack build
       uses: actions/download-artifact@v2
       with:
         name: Build output
-        path: elv-spec/
-
-    - name: Deploy
-      working-directory: elv-spec/
-      run: |
-        git config --local user.name "GitHub Action"
-        git config --global user.email "william.arnold@eluv.io"
-        git remote -v
-        git branch -v
-        git add -A
-        git commit -am 'Update book'
-        git push -v
+        path: book/
+    - name: Deploy to github pages
+      uses: JamesIves/github-pages-deploy-action@4.1.7
+      with:
+        branch: gh-pages 
+        folder: book
 
