@@ -75,7 +75,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">1.</strong> Chapter 1</a></li><li class="chapter-item expanded "><a href="defs.html" class="active"><strong aria-hidden="true">2.</strong> Definitions</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="1_spaces.html"><strong aria-hidden="true">1.</strong> Spaces</a></li><li class="chapter-item expanded "><a href="defs.html" class="active"><strong aria-hidden="true">2.</strong> Definitions</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -136,21 +136,22 @@
                     <main>
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
 <h1 id="definitions"><a class="header" href="#definitions">Definitions</a></h1>
-<p>Here are some definitions of entities within the system
-| Name                   | Description                                                                                                                                                                                     |
-| ---                    | ---                                                                                                                                                                                             |
-| Node                   | A server which stores and serves parts.                                                                                                                                                         |
-| Provider               | An individual or organization which owns, secures, and operates nodes.                                                                                                                          |
-| Tenant                 | An individual or organization which owns content.                                                                                                                                               |
-| Content                | A versioned set of data which is owned by a tenant.                                                                                                                                             |
-| Space                  | A group of providers and tenants, where providers agree to run nodes that serve content owned by a tenant according to a common set of rules.                                                   |
-| Part                   | A part is a sequence of bytes stored in the space, referenced by its hash.                                                                                                                      |
-| Content Object Version | A collection of parts created by a tenant, referenced by its hash.                                                                                                                              |
-| Content Object         | A collection of versions.                                                                                                                                                                       |
-| Library                | A grouping of content objects owned by a tenant with a permission structure what determines who within a tenancy is able to create, modify, delete content objects and content object versions. |
-| KMS                    | A tenant-owned server which holds keys for encrypting/decrypting content which the tenant stores in the space.                                                                                  |</p>
+<p>Here are some definitions of entities within the system</p>
+<table><thead><tr><th>Name</th><th>Description</th></tr></thead><tbody>
+<tr><td>Node</td><td>A server which stores and serves parts.</td></tr>
+<tr><td>Provider</td><td>An individual or organization which owns, secures, and operates nodes.</td></tr>
+<tr><td>Tenant</td><td>An individual or organization which owns content.</td></tr>
+<tr><td>Content</td><td>A versioned set of data which is owned by a tenant.</td></tr>
+<tr><td>Space</td><td>A group of providers and tenants, where providers agree to run nodes that serve content owned by a tenant according to a common set of rules.</td></tr>
+<tr><td>Part</td><td>A part is a sequence of bytes stored in the space, referenced by its hash.</td></tr>
+<tr><td>Content Object Version</td><td>A collection of parts created by a tenant, referenced by its hash.</td></tr>
+<tr><td>Content Object</td><td>A collection of versions.</td></tr>
+<tr><td>Library</td><td>A grouping of content objects owned by a tenant with a permission structure what determines who within a tenancy is able to create, modify, delete content objects and content object versions.</td></tr>
+<tr><td>KMS</td><td>A tenant-owned server which holds keys for encrypting/decrypting content which the tenant stores in the space.</td></tr>
+</tbody></table>
 <p>The following entities are identified as follows:</p>
 <table><thead><tr><th style="text-align: center">Entity</th><th>Identifier</th><th>Substrate Type</th></tr></thead><tbody>
+<tr><td style="text-align: center">Provider</td><td><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9999939999999999em;vertical-align:-0.305554em;"></span><span class="mord"><span class="mord mathnormal">i</span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.15139199999999997em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathtt mtight">p</span><span class="mord mathtt mtight">r</span><span class="mord mathtt mtight">o</span><span class="mord mathtt mtight">v</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.305554em;"><span></span></span></span></span></span></span></span></span></span></span></td><td>10-byte array</td></tr>
 <tr><td style="text-align: center">Node</td><td><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.84444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">i</span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.27777700000000005em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathtt mtight">n</span><span class="mord mathtt mtight">o</span><span class="mord mathtt mtight">d</span><span class="mord mathtt mtight">e</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span></td><td>10-byte array<sup class="footnote-reference"><a href="#1">1</a></sup></td></tr>
 <tr><td style="text-align: center">Space</td><td><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9999939999999999em;vertical-align:-0.305554em;"></span><span class="mord"><span class="mord mathnormal">i</span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.15139199999999997em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathtt mtight">s</span><span class="mord mathtt mtight">p</span><span class="mord mathtt mtight">a</span><span class="mord mathtt mtight">c</span><span class="mord mathtt mtight">e</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.305554em;"><span></span></span></span></span></span></span></span></span></span></span></td><td>10-byte array</td></tr>
 <tr><td style="text-align: center">Content Object</td><td><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9999939999999999em;vertical-align:-0.305554em;"></span><span class="mord"><span class="mord mathnormal">i</span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.15139199999999997em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathtt mtight">c</span><span class="mord mathtt mtight">o</span><span class="mord mathtt mtight">n</span><span class="mord mathtt mtight">q</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.305554em;"><span></span></span></span></span></span></span></span></span></span></span></td><td>10-byte array</td></tr>
@@ -166,7 +167,7 @@
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="chapter_1.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="1_spaces.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
                         <div style="clear: both"></div>
@@ -175,7 +176,7 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="chapter_1.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="1_spaces.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
             </nav>
