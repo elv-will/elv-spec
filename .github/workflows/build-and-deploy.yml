@@ -21,35 +21,50 @@ jobs:
     - name: Install mdbook
       uses: peaceiris/actions-mdbook@v1
       with:
-        mdbook-version: ${MDBOOK_VERSION}
+        mdbook-version: ${{env.MDBOOK_VERSION}}
+
+    - name: Make binaries path
+      run: |
+        mkdir $(pwd)/bin
 
     - name: Install mdbook-linkcheck
       run: | # `-L` because GitHub performs a redirection
         curl -L -o mdbook-linkcheck.zip "https://github.com/Michael-F-Bryan/mdbook-linkcheck/releases/download/v${MDBOOK_LINKCHECK_VER}/mdbook-linkcheck.x86_64-unknown-linux-gnu.zip"
         unzip mdbook-linkcheck.zip mdbook-linkcheck
         chmod +x mdbook-linkcheck
+        cp mdbook-linkcheck ./bin/
+
     - name: Install mdbook-mermaid
       run: |
-        curl -L -o mdbook-mermaid.zip "https://github.com/badboy/mdbook-mermaid/releases/download/v${MERMAID_VERSION}/mdbook-mermaid-v${MERMAID_VERSION}-x86_64-unknown-linux-gnu.tar.gz"
-        unzip mdbook-mermaid.zip mdbook-mermaid
+        curl -L -o mdbook-mermaid.tar.gz "https://github.com/badboy/mdbook-mermaid/releases/download/v${MERMAID_VERSION}/mdbook-mermaid-v${MERMAID_VERSION}-x86_64-unknown-linux-gnu.tar.gz"
+        tar -xf mdbook-mermaid.tar.gz
         chmod +x mdbook-mermaid
+        cp mdbook-mermaid ./bin/
+
     - name: Install mdbook-katex
       run: |
-        curl -L -o mdbook-katex.zip "https://github.com/lzanini/mdbook-katex/releases/download/v${KATEX_VERSION}/mdbook-katex-v${KATEX_VERSION}-x86_64-unknown-linux-gnu.tar.gz"
-        unzip mdbook-katex.zip mdbook-katex
-        chmod +x mdbook-katex
+        curl -L -o mdbook-katex.tar.gz "https://github.com/lzanini/mdbook-katex/releases/download/v${KATEX_VERSION}/mdbook-katex-v${KATEX_VERSION}-x86_64-unknown-linux-gnu.tar.gz"
+        tar -xf mdbook-katex.tar.gz
+        cp ./target/x86_64-unknown-linux-gnu/release/mdbook-katex ./bin/
+        chmod +x ./bin/mdbook-katex
+
+    - name: Add binaries to path
+      run: | 
+        echo $(pwd)/bin >> $GITHUB_PATH
     - name: Build
       working-directory: elv-spec/
       env:
         MDBOOK_BUILD__CREATE_MISSING: "false" # Prevent creating missing files in SUMMARY.md
-        MDBOOK_OUTPUT__LINKCHECK__COMMAND: "../mdbook-linkcheck"
+          #MDBOOK_OUTPUT__LINKCHECK__COMMAND: "../mdbook-linkcheck"
+          #MDBOOK_PREPROCESSOR__MERMAID__COMMAND: "../mdbook-mermaid"
+          #MDBOOK_PREPROCESSOR__KATEX__COMMAND: "../mdbook-katex"
       run: |
         mdbook build
     - name: Store final build
       uses: actions/upload-artifact@v2
       with:
         name: Build output
-        path: elv-spec/docs/elv-spec/
+        path: elv-spec/book
         if-no-files-found: error
 
   deploy:
@@ -81,6 +96,6 @@ jobs:
         git remote -v
         git branch -v
         git add -A
-        git commit -am 'Update build'
+        git commit -am 'Update book'
         git push -v
 
