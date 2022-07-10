@@ -57,28 +57,26 @@ Loosely protected staging keys can be assigned to modify staging content only vi
 When the content is ready for production, a tenant admin (or similar role) can move the content from the staging library in to the production library, where keys are much more closely guarded.
 
 
-\subsection{Content Object Lifecycle}
+### Content Object Lifecycle
 TODO(WILL): I'm sure there's more to this lifecycle
 
-\begin{tikzpicture}[
-  ->,
-  stage/.style={rectangle, draw=black, minimum size=3em}
-  ]
-  \node[stage] (draftcreated) {Draft Created};
-  \node[stage] (modifydraft) [below=of draftcreated] {Modify Draft};
-  \node[stage] (draftfinalized) [below=of modifydraft] {Draft Finalized};
-  \node[stage] (commitversion) [below=of draftfinalized] {Version Commited};
-  \node[stage] (distversion) [below=of commitversion] {Version Distributed};
-  \node[stage] (finalizeversion) [below=of distversion] {Version Finalized};
-  % Lines
-  \path (draftcreated) edge node[right] {Write token given to tenant} (modifydraft);
-  \path (modifydraft) edge[loop right] node[right] {Content modified with write token} (modifydraft);
-  \path (modifydraft) edge node[right] {Tenant agrees to finalize version, signs $\sig{\commitmsg}$ for node} (draftfinalized);
-  \path (draftfinalized) edge node[right] {Node calls \textbf{CommitVersion} with provided $\sig{\commitmsg}$} (commitversion);
-  \path (commitversion) edge node[right] {Node sends copies to peers} (distversion);
-  \path (distversion) edge node[right] {Submit \textbf{FinalizeVersion}} (finalizeversion);
-  \path (distversion) edge[loop right] node[right] {Retry part distribution if failed} (distversion);
-\end{tikzpicture}
+```mermaid
+flowchart TB 
+  dc(Draft Created)
+  md(Modify Draft)
+  df(Draft Finalized)
+  cv(Version Commited)
+  vp(Version Publishing)
+  vf(Version Finalized)
+
+  dc -->|Client creates draft on node| md
+  md --->|Draft Modified| md
+  md -->|Client finalizes draft| df
+  df -->|node calls CommitVersion| cv
+  cv -->|node starts publishing parts to other fabric nodes| vp
+  vp -->|parts receieved by n other fabric nodes| vf
+
+```
 
 ### Content Types
 TODO: Discuss
