@@ -24,12 +24,11 @@ The exact format of this structure is TDB (currently they’re bitflags), but sh
     * Note that for convenience, this call could also set $\rights$ such that **IsAdmin($\korigin$)** is true
 * **SetRights($\korigin, \tenantid, \libid, \ktarget, \rights$)**
   - Check that the $\rights_\korigin$ of $\korigin$ have **IsAdmin**
-  - Checks that $\adminrights{\rights}$
-  - Sets the rights of $\\keyid{target}$ in $\\libid$ to $\\rights{target}$
+  - Sets the rights of $\ktarget$ in $\libid$ to $\rights$
 
-* **TenantSetRights($\korigin, \\tenantid, \\libid, \\keyid{target}, \\rights{target}$)**
--   Check that $\korigin$ has $\\perm{admin}$ in $\\tenantid$
--   Sets the rights of $\\keyid{target}$ in $\\libid$ to $\\rights{target}$
+* **TenantSetRights($\korigin, \tenantid, \libid, \ktarget, \rights$)**
+  - Check that $\korigin$ has admin rights in $\tenantid$
+  - Sets the rights of $\ktarget$ in $\libid$ to $\rights$
 
 This also provides a way for other parts of the blockchain if a given
 key has edit access to a library.
