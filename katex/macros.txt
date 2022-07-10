@@ -3,6 +3,7 @@
 \knode:{k_\mathtt{node}}
 \kroot:{k_\mathtt{root}}
 \kuser:{k_\mathtt{user}}
+\ksigner:{k_\mathtt{signer}}
 \kkms:{k_\mathtt{kms}}
 \ktarget:{k_\mathtt{target}}
 \locator:{\mathsf{url}}
@@ -18,3 +19,7 @@
 \versid:{id_\mathtt{version}}
 \libid:{id_\mathtt{lib}}
 \kmsid:{id_\mathtt{kms}}
+\vcm:{\mathsf{VCM}}
+\opt:{\mathtt{optional} \;}
+
+\sig:{sig}
