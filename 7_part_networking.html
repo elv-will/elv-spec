@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Spaces</title>
+        <title>Part Networking</title>
         <!-- Custom HTML head -->
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
@@ -75,7 +75,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="1_spaces.html"><strong aria-hidden="true">1.</strong> Spaces</a></li><li class="chapter-item expanded "><a href="2_providers.html"><strong aria-hidden="true">2.</strong> Providers</a></li><li class="chapter-item expanded "><a href="3_tenants.html"><strong aria-hidden="true">3.</strong> Tenants</a></li><li class="chapter-item expanded "><a href="4_libraries.html"><strong aria-hidden="true">4.</strong> Libraries</a></li><li class="chapter-item expanded "><a href="5_cobjs.html"><strong aria-hidden="true">5.</strong> Content Objects</a></li><li class="chapter-item expanded "><a href="6_kms.html"><strong aria-hidden="true">6.</strong> KMS</a></li><li class="chapter-item expanded "><a href="7_part_networking.html"><strong aria-hidden="true">7.</strong> Part Networking</a></li><li class="chapter-item expanded "><a href="defs.html"><strong aria-hidden="true">8.</strong> Definitions</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="1_spaces.html"><strong aria-hidden="true">1.</strong> Spaces</a></li><li class="chapter-item expanded "><a href="2_providers.html"><strong aria-hidden="true">2.</strong> Providers</a></li><li class="chapter-item expanded "><a href="3_tenants.html"><strong aria-hidden="true">3.</strong> Tenants</a></li><li class="chapter-item expanded "><a href="4_libraries.html"><strong aria-hidden="true">4.</strong> Libraries</a></li><li class="chapter-item expanded "><a href="5_cobjs.html"><strong aria-hidden="true">5.</strong> Content Objects</a></li><li class="chapter-item expanded "><a href="6_kms.html"><strong aria-hidden="true">6.</strong> KMS</a></li><li class="chapter-item expanded "><a href="7_part_networking.html" class="active"><strong aria-hidden="true">7.</strong> Part Networking</a></li><li class="chapter-item expanded "><a href="defs.html"><strong aria-hidden="true">8.</strong> Definitions</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -135,36 +135,16 @@
                 <div id="content" class="content">
                     <main>
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
-<h1 id="spaces"><a class="header" href="#spaces">Spaces</a></h1>
-<p>The space functions as the top level governance structure of the fabric that orchestrates how providers cooperate to serve tenant data. 
-It is responsible for</p>
-<ul>
-<li>Creating providers</li>
-<li>Creating tenants</li>
-<li>Defining rules of the space which tenants/providers agree to abide by</li>
-<li>Reserving slashable bonds for both providers and tenants</li>
-<li>Governance, including
-<ul>
-<li>Admitting new tenants/providers</li>
-<li>Removing misbehaving tenants/providers</li>
-<li>Slashing tenants/providers</li>
-<li>Changing rules</li>
-</ul>
-</li>
-</ul>
-<h3 id="space-rules"><a class="header" href="#space-rules">Space rules</a></h3>
-<ul>
-<li><strong>Provider Bond:</strong> An amount, <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.980548em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathnormal">b</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.15139200000000003em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">p</span><span class="mord mathnormal mtight" style="margin-right:0.02778em;">r</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight" style="margin-right:0.03588em;">v</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span></span></span></span>, of currency each provider must lock up in order to participate within the space. Funds can be slashed from here if a provider misbehaves.</li>
-<li><strong>Tenant Bond:</strong> An amount, <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.84444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">b</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>, of currency each tenant must lock up in order to participate within the space. Funds can be slashed from here if a tenant misbehaves.</li>
-<li><strong>SLAs:</strong> Specifications for availability requirements provider nodes must have.</li>
-<li><strong>Partition Number:</strong> The partitioning constant for part storage %TODO: @Serban expand</li>
-</ul>
+<h1 id="part-networking"><a class="header" href="#part-networking">Part Networking</a></h1>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="next" href="2_providers.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="prev" href="6_kms.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="defs.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         <div style="clear: both"></div>
@@ -173,7 +153,10 @@ It is responsible for</p>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="next" href="2_providers.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="prev" href="6_kms.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="defs.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
