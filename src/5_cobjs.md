@@ -69,9 +69,9 @@ flowchart TB
   vp(Version Publishing)
   vf(Version Finalized)
 
-  dc -->|Client creates draft on node| md
-  md --->|Draft Modified| md
-  md -->|Client finalizes draft| df
+  dc -->|tenant user creates draft on node| md
+  md --->|tenant user modifies draft| md
+  md -->|tenant user finalizes draft| df
   df -->|node calls CommitVersion| cv
   cv -->|node starts publishing parts to other fabric nodes| vp
   vp -->|parts receieved by n other fabric nodes| vf
