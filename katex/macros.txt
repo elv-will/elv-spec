@@ -1,0 +1,25 @@
+\prov:{\mathtt{prov}}
+\korigin:{k_\mathtt{origin}}
+\knode:{k_\mathtt{node}}
+\kroot:{k_\mathtt{root}}
+\kuser:{k_\mathtt{user}}
+\ksigner:{k_\mathtt{signer}}
+\kkms:{k_\mathtt{kms}}
+\ktarget:{k_\mathtt{target}}
+\locator:{\mathsf{url}}
+\name:{\mathsf{name}}
+\rights:{\mathsf{rights}}
+
+\nodeid:{id_\mathtt{node}}
+\spaceid:{id_\mathtt{space}}
+\provid:{id_\prov}
+\nodeid:{id_\mathtt{node}}
+\tenantid:{id_\mathtt{tenant}}
+\conqid:{id_\mathtt{conq}}
+\versid:{id_\mathtt{version}}
+\libid:{id_\mathtt{lib}}
+\kmsid:{id_\mathtt{kms}}
+\vcm:{\mathsf{VCM}}
+\opt:{\mathtt{optional} \;}
+
+\sig:{sig}
