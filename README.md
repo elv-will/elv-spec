@@ -1,5 +1,7 @@
 # elv-spec
 
+[View here](https://elv-will.github.io/elv-spec)
+
 ### Building
 
 Install mdbook and deps
