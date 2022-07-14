@@ -3,7 +3,8 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Providers</title>
+        <title>Page not found</title>
+        <base href="/">
         <!-- Custom HTML head -->
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
@@ -75,7 +76,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="1_spaces.html"><strong aria-hidden="true">1.</strong> Spaces</a></li><li class="chapter-item expanded "><a href="2_providers.html" class="active"><strong aria-hidden="true">2.</strong> Providers</a></li><li class="chapter-item expanded "><a href="3_tenants.html"><strong aria-hidden="true">3.</strong> Tenants</a></li><li class="chapter-item expanded "><a href="4_libraries.html"><strong aria-hidden="true">4.</strong> Libraries</a></li><li class="chapter-item expanded "><a href="5_cobjs.html"><strong aria-hidden="true">5.</strong> Content Objects</a></li><li class="chapter-item expanded "><a href="6_kms.html"><strong aria-hidden="true">6.</strong> KMS</a></li><li class="chapter-item expanded "><a href="7_part_networking.html"><strong aria-hidden="true">7.</strong> Part Networking</a></li><li class="chapter-item expanded "><a href="defs.html"><strong aria-hidden="true">8.</strong> Definitions</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="1_spaces.html"><strong aria-hidden="true">1.</strong> Spaces</a></li><li class="chapter-item expanded "><a href="2_providers.html"><strong aria-hidden="true">2.</strong> Providers</a></li><li class="chapter-item expanded "><a href="3_tenants.html"><strong aria-hidden="true">3.</strong> Tenants</a></li><li class="chapter-item expanded "><a href="4_libraries.html"><strong aria-hidden="true">4.</strong> Libraries</a></li><li class="chapter-item expanded "><a href="5_cobjs.html"><strong aria-hidden="true">5.</strong> Content Objects</a></li><li class="chapter-item expanded "><a href="6_kms.html"><strong aria-hidden="true">6.</strong> KMS</a></li><li class="chapter-item expanded "><a href="7_part_networking.html"><strong aria-hidden="true">7.</strong> Part Networking</a></li><li class="chapter-item expanded "><a href="defs.html"><strong aria-hidden="true">8.</strong> Definitions</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -134,98 +135,19 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="providers"><a class="header" href="#providers">Providers</a></h1>
-<p>A provider is an entity which owns nodes within a space. 
-It is responsible for ensuring its nodes abide by the space's rules, risking it's bond if it misbehaves.
-Providers also have a permission structure which can associated levels of privilege with cryptographic keys.</p>
-<h3 id="provider-permission-levels"><a class="header" href="#provider-permission-levels">Provider Permission Levels</a></h3>
-<p>Provider keys have the following permission levels, from most to least privileged</p>
-<ul>
-<li><strong>Root level</strong>
-<ul>
-<li>add/remove admins (effectively allows for admin key rotation)</li>
-</ul>
-</li>
-<li><strong>Admin level</strong>
-<ul>
-<li>add/remove nodes</li>
-<li>bill tenants</li>
-</ul>
-</li>
-<li><strong>Node level</strong>
-<ul>
-<li>Co-author versions with tenants</li>
-<li>Mark itself as no longer pending</li>
-<li>Participate in part networking</li>
-</ul>
-</li>
-</ul>
-<p>Keys with a higher level may set the permission level of any keys strictly below it. 
-For example, a key with root permission may give other keys admin level, but admin keys may not give other keys admin or change the permission level of a key at admin level.</p>
-<h3 id="provider-blockchain-calls"><a class="header" href="#provider-blockchain-calls">Provider Blockchain Calls</a></h3>
-<p>In addition to setting permissions on keys, we have the following calls</p>
-<ul>
-<li>
-<p><strong>CreateProvider($\korigin, \spaceid, \provid$)</strong> </p>
-<ul>
-<li>Check governance to see whether korigin can create a provider</li>
-<li>Creates $\provid$ and sets its space to $\spaceid$</li>
-<li>Sets $\korigin$ as the root key ($\kroot$) of $\provid$</li>
-<li>Sets $\korigin$ as a key for $\provid$ with root level</li>
-<li>Bonds some currency from $\kroot$ to the space for $\provid$</li>
-</ul>
-</li>
-<li>
-<p><strong>AddNode($\korigin, \provid, \nodeid, \knode, \locator$)</strong></p>
-<ul>
-<li>Checks that $\korigin$ has at least admin level in $\provid$.</li>
-<li>Creates a node $\nodeid$ with locator $\locator}$</li>
-<li>Registers $\knode$ to $\provid$ with node permission level <sup class="footnote-reference"><a href="#1">1</a></sup></li>
-<li>Marks the node as pending while it syncs up parts with the rest of the space</li>
-</ul>
-</li>
-<li>
-<p><strong>ConfirmNode($\korigin, \provid, \nodeid$)]</strong> marks a node as no longer pending</p>
-<ul>
-<li>Checks that $\korigin$ has node permission or above for $\provid$</li>
-<li>Sets $\nodeid$ to no longer pending</li>
-</ul>
-</li>
-<li>
-<p><strong>RemoveNode($\korigin, \provid, \nodeid$)</strong> removes a node</p>
-<ul>
-<li>Checks that $\korigin$ has at least admin permission in $\provid$</li>
-<li>Removes all $\nodeid$ information from the space and provider</li>
-</ul>
-</li>
-<li>
-<p><strong>BillTenant</strong> TODO</p>
-</li>
-</ul>
-<p><sup class="footnote-reference"><a href="#1">1</a></sup> Should this error if the key already exists within the permissions scheme?</p>
+                        <h1 id="document-not-found-404"><a class="header" href="#document-not-found-404">Document not found (404)</a></h1>
+<p>This URL is invalid, sorry. Please use the navigation bar or search to continue.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="1_spaces.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
-                                <i class="fa fa-angle-left"></i>
-                            </a>
-                            <a rel="next" href="3_tenants.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <i class="fa fa-angle-right"></i>
-                            </a>
                         <div style="clear: both"></div>
                     </nav>
                 </div>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="1_spaces.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
-                        <i class="fa fa-angle-left"></i>
-                    </a>
-                    <a rel="next" href="3_tenants.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <i class="fa fa-angle-right"></i>
-                    </a>
             </nav>
 
         </div>
@@ -241,5 +163,7 @@ For example, a key with root permission may give other keys admin level, but adm
         <script src="book.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Custom JS scripts -->
+        <script type="text/javascript" src="mermaid.min.js"></script>
+        <script type="text/javascript" src="mermaid-init.js"></script>
     </body>
 </html>
