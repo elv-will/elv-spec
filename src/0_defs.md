@@ -19,14 +19,14 @@ Here are some definitions of entities within the system
 
 The following entities are identified as follows:
 
-| Entity                 | Identifier | Substrate Type          |
-| :---:                  | ---        | ---                     |
-| Provider               | $\provid$  | 10-byte array           |
-| Node                   | $\nodeid$  | 10-byte array[^1]       |
-| Space                  | $\spaceid$ | 10-byte array           |
-| Content Object         | $\conqid$  | 10-byte array           |
-| Content Object Version | $\versid$  | 32-byte array           |
-| KMS                    | $\kmsid$   | 10-byte array           |
-| Library                | $\libid$   | unsigned 16-bit integer |
+| Entity                 | Identifier        | Substrate Type          |
+| :---:                  | ---               | ---                     |
+| Provider               | `ProviderId`      | 10-byte array           |
+| Node                   | `NodeId`          | 10-byte array[^1]       |
+| Space                  | `SpaceId`         | 10-byte array           |
+| Content Object         | `ContentObjectId` | 10-byte array           |
+| Content Object Version | `CObjVersionId`   | 32-byte array           |
+| KMS                    | `KMSId`           | 10-byte array           |
+| Library                | `LibraryId`       | unsigned 16-bit integer |
 
 [^1]: Could node id just be an unsigned 32-bit integer and do some round robin or mod-magic for assigning partitions?
