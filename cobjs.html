@@ -137,51 +137,22 @@
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
 <h1 id="content-objects"><a class="header" href="#content-objects">Content Objects</a></h1>
 <p>Content objects are the main way tenants store and retrieve data, globally referenced by <code>(TenantId, ConqId)</code>.
-They are created by storing data in a node, who calls \textbf{CommitVersion} with a digest of the data.
+They are created by storing data in a node, who calls <strong>CommitVersion</strong> with a digest of the data.
 Once the verison is commited, other nodes in the space can retrieve the content object.
-Once a sufficient number of nodes retrieve copies of the content object<sup class="footnote-reference"><a href="#1">1</a></sup>, the original authoring node submits a <strong>ConfirmVersion</strong> which marks the commit as finalized.</p>
+Once a sufficient number of nodes retrieve copies of the content object<sup class="footnote-reference"><a href="#1">1</a></sup>, the original authoring node submits a <strong>ConfirmVersion</strong> which marks the commit as finalized.
+Each content object also has a 'head' version which refers to the version that should be retrieved when a content object is referred to by its ID.</p>
 <p>In order to prevent nodes from creating arbitrary versions without permission of tenants, a tenant-signed version commit message (<code>VersionCommitMessage</code>) must be provided in the <strong>CommitVersion</strong> call.</p>
 <pre><code>  VersionCommitMessage {
     originator: ProviderId,
     tenant_id: TenantId,
     content_object_id: ContentObjectId,
     tlp_size: #[compact] u64,
-    digest: VersionId,
+    version_id: VersionId,
     ts: u64,
+    set_head_on_finalize: bool,
   }
 </code></pre>
-<h3 id="content-objects-and-libraries"><a class="header" href="#content-objects-and-libraries">Content Objects and Libraries</a></h3>
-<p>Libraries are the permission structure that describes who can create content objects and content object versions.
-Upon creation, an <code>Option&lt;LibraryId&gt;</code> field may be provided. 
-If no <code>LibraryId</code> is provided, then only keys with at least admin level in <code>TenantId</code> can create/modify versions.
-If that field is provided, then any key which has edit rights can create/modify versions.
-This makes libraries an optional component: if you want to use them, set them up with the proper keys and use them.
-Otherwise, tenant admin keys are used for creating/modifying content.</p>
-<p>It's helpful to picture libraries as a filesystem with one level of folders:</p>
-<pre><code>Content Objects:
- - Content Object 1 &lt;- Operated by tenant admins
- - Content Object 2 &lt;- Operated by tenant admins
- - Library 1:
-    - Content Object 3 &lt;- Operated by Library 1 admins
-    - Content Object 4 &lt;- Operated by Library 1 admins
- - Library 2:
-    - Content Object 5 &lt;- Operated by Library 2 admins
-    - Content Object 6 &lt;- Operated by Library 2 admins
-</code></pre>
-<p>Content objects are universally referred to by <code>(TenantId, ContentObjectId)</code>, hence they can be moved between libraries.
-A sample use case would be to have one library for staging and one for production.</p>
-<pre><code>Content Objects.
- - Staging Library.
-    - Staging Movie A &lt;- Can move to production when finished
-    - Staging Movie B
- - Production Library &lt;- Things served to end users.
-    - Public Production Movie C
-}
-</code></pre>
-<p>Loosely protected staging keys can be assigned to modify staging content only viewed internally in the tenancy.
-When the content is ready for production, a tenant admin (or similar role) can move the content from the staging library in to the production library, where keys are much more closely guarded.</p>
 <h3 id="content-object-lifecycle"><a class="header" href="#content-object-lifecycle">Content Object Lifecycle</a></h3>
-<p>TODO(WILL): I'm sure there's more to this lifecycle</p>
 <pre class="mermaid">flowchart TB 
   dc(Draft Created)
   md(Modify Draft)
@@ -195,46 +166,71 @@ When the content is ready for production, a tenant admin (or similar role) can m
   md --&gt;|tenant user finalizes draft| df
   df --&gt;|node calls CommitVersion| cv
   cv --&gt;|node starts publishing parts to other fabric nodes| vp
-  vp --&gt;|parts receieved by n other fabric nodes| vf
+  vp --&gt;|parts receieved other nodes, node calls FinalizeVersion| vf
 
 </pre>
 <h3 id="content-types"><a class="header" href="#content-types">Content Types</a></h3>
 <p>TODO: Discuss</p>
+<h3 id="content-object-blockchain-storage"><a class="header" href="#content-object-blockchain-storage">Content Object Blockchain Storage</a></h3>
+<pre><code>(TenantId, ContentObjectId) -&gt; {
+  head_version: Option&lt;VersionId&gt;,
+  version_count: u32,
+}
+(TenantId, ContentObjectId, VersionId) -&gt; {
+  originator: ProviderId,
+  tlp_size: #[compact] u64,
+  ts_committed: u64,
+  ts_finalized: Option&lt;u64&gt;,
+  set_head_on_finalize: bool
+}
+</code></pre>
 <h3 id="content-object-blockchain-calls"><a class="header" href="#content-object-blockchain-calls">Content Object Blockchain Calls</a></h3>
 <ul>
 <li>
-<p><strong><code>CreateContentObject(origin: Origin, ten: TenantId, cobj: ContentObjectId, lib: Option&lt;LibraryId&gt;)</code></strong></p>
+<p><strong><code>CreateContentObject(origin: Origin, ten: TenantId, cobj: ContentObjectId)</code></strong></p>
 <ul>
-<li>If <code>lib</code> is none, checks that <code>origin</code> has at least admin permissions in <code>ten</code></li>
-<li>Otherwise, if <code>lib</code> is some <code>LibraryId</code>, checks that <code>origin</code> has edit rights</li>
-<li>Registers <code>ContentObjectId</code> with the associated <code>Option&lt;LibraryId&gt;</code> to <code>TenantId</code>, </li>
+<li>Checks that <code>origin</code> has at least <code>CONTENT</code> permissions in <code>ten</code></li>
+<li>Stores the content object at <code>(ten, cobj)</code>
+<pre><code>  {
+    head_version: None,
+    version_count: 0,
+  }
+</code></pre>
+</li>
 </ul>
 </li>
 <li>
-<p><strong>CommitVersion(<code>origin: Origin, ten: TenantId, cobj: ContentObjectId, ver: CObjVersionId, tenant_signer: AccountId, vcm: VersionCommitMessage, vcm_sig: Signature</code>)</strong></p>
+<p><strong><code>CommitVersion(origin: Origin, tenant_signer: AccountId, vcm: VersionCommitMessage, vcm_sig: Signature)</code></strong></p>
 <ul>
-<li>Checks that <code>Ooigin</code> has <code>NODE</code> level permission within <code>vcm.provider_id</code></li>
-<li>Retrieve the <code>Option&lt;LibraryId&gt;</code> for <code>(TenantId, ContentObjectId)</code>
-<ul>
-<li>If it's none checks that <code>AccountId</code> has at least admin level in <code>TenantId</code> </li>
-<li>Otherwise, checks that <code>tenant_signer</code> has edit rights within <code>LibraryId</code></li>
-</ul>
-</li>
+<li>Checks that <code>origin</code> has <code>NODE</code> level permission within <code>vcm.provider_id</code></li>
+<li>Checks that <code>tenant_signer</code> has <code>CONTENT</code> level permission within <code>vcm.tenant_id</code></li>
 <li>Checks that <code>vcm_sig</code> is a valid signature of the scale encoded <code>vcm</code> by <code>tenant_signer</code></li>
-<li>Stores the version at  <code>(ten, cobj, ver)</code> with the relevant metadata in <code>vcm</code> and a <code>pending=true</code> flag</li>
+<li>Increment <code>version_count</code> at <code>(vcm.tenant_id, vcm.content_object_id)</code></li>
+<li>Stores the version at  <code>(vcm.tenant_id, vcm.content_object_id, vcm.version_id)</code> 
+<pre><code>  {
+    originator: vcm.originator,
+    tlp_size: vcm.tlp_size,
+    ts_committed: vcm.ts,
+    ts_finalized: None,
+    set_head_on_finalize: vcm.set_head_on_finalize
+  }
+</code></pre>
+</li>
 </ul>
 </li>
 <li>
-<p><strong>FinalizeVersion(<code>origin: Origin, provider: ProviderId, ten: TenantId, cobj: ContentObjectId, ver: CObjVersionId</code>)</strong></p>
+<p><strong><code>FinalizeVersion(origin: Origin, provider: ProviderId, ten: TenantId, cobj: ContentObjectId, ver: CObjVersionId, ts: u64)</code></strong></p>
 <ul>
 <li>Checks that <code>origin</code> has at least node level within <code>provider</code>.</li>
-<li>Checks that <code>provider</code> matches the <code>provider</code> stored in the metadata of the version stored in <code>(TenantId, ContentObjectId, CObjVersionId)</code> <sup class="footnote-reference"><a href="#2">2</a></sup></li>
-<li>Removes the pending flag from the version at <code>(TenantId, ContentObjectId, CObjVersionId)</code></li>
+<li>Retrieve the version metadata, <code>ver_meta</code>, stored at <code>(ten, cobj, ver)</code></li>
+<li>Checks that <code>provider</code> matches the <code>ver_meta.originator</code></li>
+<li>Checks that <code>ts</code> is a recent timestamp</li>
+<li>Sets <code>ver_meta.ts_finalized = Some(ts)</code></li>
+<li>If <code>ver_meta.set_head_on_finalize</code>, sets the <code>head_version</code> of the content object at <code>(ten, cobj)</code> to <code>ver</code></li>
 </ul>
 </li>
 </ul>
 <p><sup class="footnote-reference"><a href="#1">1</a></sup> <em>TODO:</em> Should also talk about partitioning and how we assert data is replicated</p>
-<p><sup class="footnote-reference"><a href="#2">2</a></sup> This should probably check node id instead. That would require closer coupling of the node and a key it holds, which currently doesn't exist.</p>
 
                     </main>
 
