@@ -20,27 +20,48 @@ Provider keys have the following permission levels, from most to least privilege
 Keys with a higher level may set the permission level of any keys strictly below it. 
 For example, a key with root permission may give other keys admin level, but admin keys may not give other keys admin or change the permission level of a key at admin level.
 
+### Provider Blockchain Storage
+```rust
+(ProviderId) -> {
+  space: SpaceId,
+  root: AccountId,
+}
+(ProviderId, NodeId) -> {
+  pending: true,
+  locator: BoundedString,
+}
+```
+
 ### Provider Blockchain Calls
 In addition to setting permissions on keys, we have the following calls
 
-* **CreateProvider($\korigin, \spaceid, \provid$)** 
-  - Check governance to see whether korigin can create a provider
-  - Creates $\provid$ and sets its space to $\spaceid$
-  - Sets $\korigin$ as the root key ($\kroot$) of $\provid$
-  - Sets $\korigin$ as a key for $\provid$ with root level
-  - Bonds some currency from $\kroot$ to the space for $\provid$
-* **AddNode($\korigin, \provid, \nodeid, \knode, \locator$)**
-  - Checks that $\korigin$ has at least admin level in $\provid$.
-  - Creates a node $\nodeid$ with locator $\locator}$
-  - Registers $\knode$ to $\provid$ with node permission level [^1]
-  - Marks the node as pending while it syncs up parts with the rest of the space
+* **`CreateProvider(origin: Origin, space: SpaceId, prv: ProviderId)`** 
+  - Checks `space` governance to see whether `origin` can create a provider
+  - Creates a provider at `prv` 
+    ```rust
+    {
+      space: space,
+      root: origin,
+    }
+    ```
+  - Bonds some currency from `root` to `space` under `prv`
+* **`CreateNode(origin: Origin, prv: ProviderId, node: NodeId, locator: BoundedString)`**
+  - Checks that `origin` has at least `ADMIN` level in `prv`
+  - Creates a node (note that it's marked as pending while it syncs up with other nodes)
+    ```rust
+    {
+      pending: true,
+      locator: locator,
+    }
+    ```
+  - Registers `origin` to `prv` with `NODE` permission level [^1]
 
-* **ConfirmNode($\korigin, \provid, \nodeid$)]** marks a node as no longer pending
-  - Checks that $\korigin$ has node permission or above for $\provid$
-  - Sets $\nodeid$ to no longer pending
-* **RemoveNode($\korigin, \provid, \nodeid$)** removes a node
-  - Checks that $\korigin$ has at least admin permission in $\provid$
-  - Removes all $\nodeid$ information from the space and provider
+* **`ConfirmNode(origin: Origin, prv: ProviderId, node: NodeId)`** marks a node as no longer pending
+  - Checks that `origin` has `NODE` permission or above in `prv`
+  - Sets `pending=false` at  `(prv, node)`
+* **`RemoveNode(origin: Origin, prv: ProviderId, node: NodeId)`** removes a node
+  - Checks that `origin` has at least admin permission in `prv`
+  - Deletes the node at `(prv, node)`
 * **BillTenant** TODO
 
 [^1] Should this error if the key already exists within the permissions scheme?

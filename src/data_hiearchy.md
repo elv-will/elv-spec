@@ -12,7 +12,6 @@ Individually, they have the following IDs:
 | Content Object         | `CobjId`        | 10-byte array           |
 | Content Object Version | `CobjVersionId` | 32-byte array           |
 | KMS                    | `KMSId`         | 10-byte array           |
-| Library                | `LibraryId`     | unsigned 16-bit integer |
 
 
 But they are hierarchical. 
@@ -25,7 +24,6 @@ flowchart TD
   tenant(Tenant)
   kms(KMS)
   cobj(Content Object)
-  lib(Library)
   cobjv(Content Object Version)
 
   space --> provider
@@ -35,7 +33,6 @@ flowchart TD
 
   tenant --> kms
   tenant --> cobj
-  tenant --> lib
   cobj --> cobjv
 ```
 
@@ -88,7 +85,6 @@ Here is a complete list of how the IDs stored:
 | Content Object         | `(TenantId, ContentObjectId)`                       |
 | Content Object Version | `(TenantId, ContentObjectId, ContentObjectVersion)` |
 | KMS                    | `(TenantId, KMSId)`                                 |
-| Library                | `(TenantId, LibraryId)`                             |
 
 All provider and tenant children use nested IDs. 
 Tenants and Providers use flat ids, since deleting a whole space should be considered very rare.

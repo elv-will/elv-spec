@@ -8,26 +8,47 @@ Tenant keys have the following permission levels, from most to least privileged
 
 * **Root level** 
   - add/remove admins
+  - participate in space governance
 * **Admin level** 
-  - add/remove kmses, 
-  - create libraries
-  - add/remove any users to/from libraries
+  - add/remove kmses
+  - add funds for billing
 * **KMS level** 
-  - can co-author content object versions with nodes
+  - create/remove content keys
+* **Content level** 
+  - co-author content object versions with nodes
+
+### Tenant Blockchain Storage
+```rust
+(TenantId) -> {
+  space: SpaceId,
+  root: AccountId,
+}
+(TenantId, KMSId) -> {
+  locator: BoundedString,
+}
+```
 
 ### Tenant Blockchain Calls
-* **CreateTenant($\korigin, \spaceid, \tenantid$)** creates a tenancy
-  - Checks governance to see whether origin can create a tenant
-  - Creates $\tenantid$ and sets its space to $\spaceid$
-  - Sets $\korigin$ as the creator of $\tenantid$
-  - Sets $\korigin$ as a key for $\tenantid$ with root level 
-  - Bonds some currency from $\korigin$ to the space under $\tenantid$
-* **AddKMS($\korigin, \tenantid, \kmsid, \kkms, \locator$)** creates a kms
-  - Checks that $\korigin$ has at least admin permission in $\tenantid$.
-  - Creates a KMS $\kmsid$ within $\tenantid$ with locator $\locator$
-  - Registers $\kkms$ to $\tenantid$ with KMS permission level 
-* **RemoveKMS($\korigin, \tenantid, \kmsid$)** removes a node
-  - Checks that $\korigin$ has at least admin permissions in $\tenantid$
-  - Removes all $\kmsid$ information from the space and tenancy
-  - Removes $\kkms$ from $\tenantid$
+* **`CreateTenant(origin: Origin, space: SpaceId, tenant: TenantId)`**
+  - Checks `space` governance to see whether `origin` can create a tenant
+  - Creates `tenant` 
+  ```rust
+  {
+    space: space,
+    root: origin,
+  }
+  ```
+  - Registers `origin` with `tenant` with `ADMIN` level 
+  - Bonds some currency from `origin` to the `space` under `tenant`
+* **`AddKMS(origin: Origin, tenant: TenantId, kms: KMSId, locator: BoundedString)`** 
+  - Checks that `origin` has `ADMIN` permission for `tenant`
+  - Creates a KMS at `(tenant, kms)`
+  ```rust
+    {
+      locator: locator,
+    }
+  ```
+* **`RemoveKMS(origin: Origin, tenant: TenantId, kms: KMSId)`** removes a node
+  - Checks that `origin` has at least `ADMIN` permissions in `tenant`
+  - Removes `(tenant, kms)`
 * **TODO: Remove Tenant, Top up billing balance**

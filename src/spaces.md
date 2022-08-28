@@ -13,7 +13,7 @@ It is responsible for
   - Changing rules
 
 ### Space rules
-* **Provider Bond:** An amount, $b_{prov}$, of currency each provider must lock up in order to participate within the space. Funds can be slashed from here if a provider misbehaves.
-* **Tenant Bond:** An amount, $b_{ten}$, of currency each tenant must lock up in order to participate within the space. Funds can be slashed from here if a tenant misbehaves.
+* **Provider Bond:** An amount, `PROVIDER_BOND`, of currency each provider must lock up in order to participate within the space. Funds can be slashed from here if a provider misbehaves.
+* **Tenant Bond:** An amount, `TENANT_BOND`, of currency each tenant must lock up in order to participate within the space. Funds can be slashed from here if a tenant misbehaves.
 * **SLAs:** Specifications for availability requirements provider nodes must have.
 * **Partition Number:** The partitioning constant for part storage %TODO: @Serban expand

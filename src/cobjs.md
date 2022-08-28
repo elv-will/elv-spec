@@ -7,15 +7,16 @@ Each content object also has a 'head' version which refers to the version that s
 
 In order to prevent nodes from creating arbitrary versions without permission of tenants, a tenant-signed version commit message (`VersionCommitMessage`) must be provided in the **CommitVersion** call.
 
-```
+```rust
   VersionCommitMessage {
     originator: ProviderId,
     tenant_id: TenantId,
     content_object_id: ContentObjectId,
-    tlp_size: #[compact] u64,
     version_id: VersionId,
+    tlp_size: #[compact] u64,
     ts: u64,
     set_head_on_finalize: bool,
+    kms_id: KMSId,
   }
 ```
 
@@ -43,7 +44,7 @@ TODO: Discuss
 
 ### Content Object Blockchain Storage
 
-```
+```rust
 (TenantId, ContentObjectId) -> {
   head_version: Option<VersionId>,
   version_count: u32,
@@ -53,7 +54,8 @@ TODO: Discuss
   tlp_size: #[compact] u64,
   ts_committed: u64,
   ts_finalized: Option<u64>,
-  set_head_on_finalize: bool
+  set_head_on_finalize: bool,
+  kms_id: KMSId
 }
 ```
 
@@ -62,7 +64,7 @@ TODO: Discuss
 * **`CreateContentObject(origin: Origin, ten: TenantId, cobj: ContentObjectId)`**
   - Checks that `origin` has at least `CONTENT` permissions in `ten`
   - Stores the content object at `(ten, cobj)`
-    ```
+    ```rust
       {
         head_version: None,
         version_count: 0,
@@ -75,13 +77,14 @@ TODO: Discuss
   - Checks that `vcm_sig` is a valid signature of the scale encoded `vcm` by `tenant_signer`
   - Increment `version_count` at `(vcm.tenant_id, vcm.content_object_id)`
   - Stores the version at  `(vcm.tenant_id, vcm.content_object_id, vcm.version_id)` 
-    ```
+    ```rust
       {
         originator: vcm.originator,
         tlp_size: vcm.tlp_size,
         ts_committed: vcm.ts,
         ts_finalized: None,
-        set_head_on_finalize: vcm.set_head_on_finalize
+        set_head_on_finalize: vcm.set_head_on_finalize,
+        kms_id: vcm.kms_id,
       }
     ```
 
@@ -92,5 +95,22 @@ TODO: Discuss
   - Checks that `ts` is a recent timestamp
   - Sets `ver_meta.ts_finalized = Some(ts)`
   - If `ver_meta.set_head_on_finalize`, sets the `head_version` of the content object at `(ten, cobj)` to `ver`
+
+* **`SetHeadVersion(origin: Origin, ten: TenantId, cobj: ContentObjectId, ver: Option<VersionId>)`**
+  - Checks that `origin` has `CONTENT` level permissions within `ten`
+  - Checks that `(ten, cobj, ver)` exists
+  - Sets the `head_version` at `(ten, cobj)` to `ver`
+
+* **`DeleteVersion(origin: Origin, ten: TenantId, cobj: ContentObjectId, ver: VersionId)`**
+  - Checks that `origin` has `CONTENT` level permissions within `ten`
+  - Checks that `(ten, cobj, ver)` exists
+  - Checks that `head_version` at `(ten, cobj)` **is not** `ver`
+  - Deletes the version stored at `(ten, cobj, ver)`
+  - Decrements `version_count` at `(ten, cobj)`
+
+* **`DeleteContentObject(origin: Origin, ten: TenantId, cobj: ContentObjId)`**
+  - Checks that `origin` has `CONTENT` level permissions within `ten`
+  - Checks that `version_count` is `0`
+  - Deletes the content object at `(ten, cobj)`
 
 [^1] *TODO:* Should also talk about partitioning and how we assert data is replicated
