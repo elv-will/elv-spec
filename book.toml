@@ -9,12 +9,8 @@ src = "src"
 [preprocessor.mermaid]
 command = "mdbook-mermaid"
 
-[preprocessor.katex]
-macros = "src/katex/macros.txt"
-
 [output]
-
-[output.katex]
 
 [output.html]
 additional-js = ["mermaid.min.js", "mermaid-init.js"]
+mathjax-support = true

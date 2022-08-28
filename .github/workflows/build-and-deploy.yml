@@ -9,7 +9,6 @@ on:
 env:
   MDBOOK_VERSION: 0.4.18
   MERMAID_VERSION: 0.11.0
-  KATEX_VERSION: 0.2.10
   MDBOOK_LINKCHECK_VER: 0.7.6
 
 jobs:
@@ -43,13 +42,6 @@ jobs:
         chmod +x mdbook-mermaid
         cp mdbook-mermaid $HOME/bin/
 
-    - name: Install mdbook-katex
-      run: |
-        curl -L -o mdbook-katex.tar.gz "https://github.com/lzanini/mdbook-katex/releases/download/v${KATEX_VERSION}/mdbook-katex-v${KATEX_VERSION}-x86_64-unknown-linux-gnu.tar.gz"
-        tar -xf mdbook-katex.tar.gz
-        cp ./target/x86_64-unknown-linux-gnu/release/mdbook-katex $HOME/bin/
-        chmod +x $HOME/bin/mdbook-katex
-
     - name: Build
       env:
         MDBOOK_BUILD__CREATE_MISSING: "false" # Prevent creating missing files in SUMMARY.md
@@ -68,4 +60,4 @@ jobs:
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: book/html
+        publish_dir: book
