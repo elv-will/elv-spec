@@ -1,0 +1,643 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title></title>
+        <meta name="robots" content="noindex" />
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="spaces.html"><strong aria-hidden="true">1.</strong> Spaces</a></li><li class="chapter-item expanded "><a href="providers.html"><strong aria-hidden="true">2.</strong> Providers</a></li><li class="chapter-item expanded "><a href="tenants.html"><strong aria-hidden="true">3.</strong> Tenants</a></li><li class="chapter-item expanded "><a href="libraries.html"><strong aria-hidden="true">4.</strong> Libraries</a></li><li class="chapter-item expanded "><a href="cobjs.html"><strong aria-hidden="true">5.</strong> Content Objects</a></li><li class="chapter-item expanded "><a href="kms.html"><strong aria-hidden="true">6.</strong> KMS</a></li><li class="chapter-item expanded "><a href="data_hiearchy.html"><strong aria-hidden="true">7.</strong> Data Hiearchy and Key Prefixing</a></li><li class="chapter-item expanded "><a href="part_networking.html"><strong aria-hidden="true">8.</strong> Part Networking</a></li><li class="chapter-item expanded "><a href="0_defs.html"><strong aria-hidden="true">9.</strong> Definitions</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="spaces"><a class="header" href="#spaces">Spaces</a></h1>
+<p>The space functions as the top level governance structure of the fabric that orchestrates how providers cooperate to serve tenant data. 
+It is responsible for</p>
+<ul>
+<li>Creating providers</li>
+<li>Creating tenants</li>
+<li>Defining rules of the space which tenants/providers agree to abide by</li>
+<li>Reserving slashable bonds for both providers and tenants</li>
+<li>Governance, including
+<ul>
+<li>Admitting new tenants/providers</li>
+<li>Removing misbehaving tenants/providers</li>
+<li>Slashing tenants/providers</li>
+<li>Changing rules</li>
+</ul>
+</li>
+</ul>
+<h3 id="space-rules"><a class="header" href="#space-rules">Space rules</a></h3>
+<ul>
+<li><strong>Provider Bond:</strong> An amount, <code>PROVIDER_BOND</code>, of currency each provider must lock up in order to participate within the space. Funds can be slashed from here if a provider misbehaves.</li>
+<li><strong>Tenant Bond:</strong> An amount, <code>TENANT_BOND</code>, of currency each tenant must lock up in order to participate within the space. Funds can be slashed from here if a tenant misbehaves.</li>
+<li><strong>SLAs:</strong> Specifications for availability requirements provider nodes must have.</li>
+<li><strong>Partition Number:</strong> The partitioning constant for part storage %TODO: @Serban expand</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="providers"><a class="header" href="#providers">Providers</a></h1>
+<p>A provider is an entity which owns nodes within a space. 
+It is responsible for ensuring its nodes abide by the space's rules, risking it's bond if it misbehaves.
+Providers also have a permission structure which can associated levels of privilege with cryptographic keys.</p>
+<h3 id="provider-permission-levels"><a class="header" href="#provider-permission-levels">Provider Permission Levels</a></h3>
+<p>Provider keys have the following permission levels, from most to least privileged</p>
+<ul>
+<li><strong>Root level</strong>
+<ul>
+<li>add/remove admins (effectively allows for admin key rotation)</li>
+</ul>
+</li>
+<li><strong>Admin level</strong>
+<ul>
+<li>add/remove nodes</li>
+<li>bill tenants</li>
+</ul>
+</li>
+<li><strong>Node level</strong>
+<ul>
+<li>Co-author versions with tenants</li>
+<li>Mark itself as no longer pending</li>
+<li>Participate in part networking</li>
+</ul>
+</li>
+</ul>
+<p>Keys with a higher level may set the permission level of any keys strictly below it. 
+For example, a key with root permission may give other keys admin level, but admin keys may not give other keys admin or change the permission level of a key at admin level.</p>
+<h3 id="provider-blockchain-storage"><a class="header" href="#provider-blockchain-storage">Provider Blockchain Storage</a></h3>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>(ProviderId) -&gt; {
+  space: SpaceId,
+  root: AccountId,
+}
+(ProviderId, NodeId) -&gt; {
+  pending: true,
+  locator: BoundedString,
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="provider-blockchain-calls"><a class="header" href="#provider-blockchain-calls">Provider Blockchain Calls</a></h3>
+<p>In addition to setting permissions on keys, we have the following calls</p>
+<ul>
+<li>
+<p><strong><code>CreateProvider(origin: Origin, space: SpaceId, prv: ProviderId)</code></strong> </p>
+<ul>
+<li>Checks <code>space</code> governance to see whether <code>origin</code> can create a provider</li>
+<li>Creates a provider at <code>prv</code> 
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>{
+  space: space,
+  root: origin,
+}
+<span class="boring">}
+</span></code></pre></pre>
+</li>
+<li>Bonds some currency from <code>root</code> to <code>space</code> under <code>prv</code></li>
+</ul>
+</li>
+<li>
+<p><strong><code>CreateNode(origin: Origin, prv: ProviderId, node: NodeId, locator: BoundedString)</code></strong></p>
+<ul>
+<li>Checks that <code>origin</code> has at least <code>ADMIN</code> level in <code>prv</code></li>
+<li>Creates a node (note that it's marked as pending while it syncs up with other nodes)
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>{
+  pending: true,
+  locator: locator,
+}
+<span class="boring">}
+</span></code></pre></pre>
+</li>
+<li>Registers <code>origin</code> to <code>prv</code> with <code>NODE</code> permission level <sup class="footnote-reference"><a href="#1">1</a></sup></li>
+</ul>
+</li>
+<li>
+<p><strong><code>ConfirmNode(origin: Origin, prv: ProviderId, node: NodeId)</code></strong> marks a node as no longer pending</p>
+<ul>
+<li>Checks that <code>origin</code> has <code>NODE</code> permission or above in <code>prv</code></li>
+<li>Sets <code>pending=false</code> at  <code>(prv, node)</code></li>
+</ul>
+</li>
+<li>
+<p><strong><code>RemoveNode(origin: Origin, prv: ProviderId, node: NodeId)</code></strong> removes a node</p>
+<ul>
+<li>Checks that <code>origin</code> has at least admin permission in <code>prv</code></li>
+<li>Deletes the node at <code>(prv, node)</code></li>
+</ul>
+</li>
+<li>
+<p><strong>BillTenant</strong> TODO</p>
+</li>
+</ul>
+<p><sup class="footnote-reference"><a href="#1">1</a></sup> Should this error if the key already exists within the permissions scheme?</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="tenants"><a class="header" href="#tenants">Tenants</a></h1>
+<p>A tenant is an owner and creator of content. They are responsible for providing a service available to providers' nodes which can manage keys and encrypt/decrypt content.</p>
+<h3 id="tenant-permissions"><a class="header" href="#tenant-permissions">Tenant Permissions</a></h3>
+<p>Tenant keys have the following permission levels, from most to least privileged</p>
+<ul>
+<li><strong>Root level</strong> 
+<ul>
+<li>add/remove admins</li>
+<li>participate in space governance</li>
+</ul>
+</li>
+<li><strong>Admin level</strong> 
+<ul>
+<li>add/remove kmses</li>
+<li>add funds for billing</li>
+</ul>
+</li>
+<li><strong>KMS level</strong> 
+<ul>
+<li>create/remove content keys</li>
+</ul>
+</li>
+<li><strong>Content level</strong> 
+<ul>
+<li>co-author content object versions with nodes</li>
+</ul>
+</li>
+</ul>
+<h3 id="tenant-blockchain-storage"><a class="header" href="#tenant-blockchain-storage">Tenant Blockchain Storage</a></h3>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>(TenantId) -&gt; {
+  space: SpaceId,
+  root: AccountId,
+}
+(TenantId, KMSId) -&gt; {
+  locator: BoundedString,
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="tenant-blockchain-calls"><a class="header" href="#tenant-blockchain-calls">Tenant Blockchain Calls</a></h3>
+<ul>
+<li><strong><code>CreateTenant(origin: Origin, space: SpaceId, tenant: TenantId)</code></strong>
+<ul>
+<li>Checks <code>space</code> governance to see whether <code>origin</code> can create a tenant</li>
+<li>Creates <code>tenant</code> </li>
+</ul>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>{
+  space: space,
+  root: origin,
+}
+<span class="boring">}
+</span></code></pre></pre>
+<ul>
+<li>Registers <code>origin</code> with <code>tenant</code> with <code>ADMIN</code> level </li>
+<li>Bonds some currency from <code>origin</code> to the <code>space</code> under <code>tenant</code></li>
+</ul>
+</li>
+<li><strong><code>AddKMS(origin: Origin, tenant: TenantId, kms: KMSId, locator: BoundedString)</code></strong> 
+<ul>
+<li>Checks that <code>origin</code> has <code>ADMIN</code> permission for <code>tenant</code></li>
+<li>Creates a KMS at <code>(tenant, kms)</code></li>
+</ul>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>  {
+    locator: locator,
+  }
+<span class="boring">}
+</span></code></pre></pre>
+</li>
+<li><strong><code>RemoveKMS(origin: Origin, tenant: TenantId, kms: KMSId)</code></strong> removes a node
+<ul>
+<li>Checks that <code>origin</code> has at least <code>ADMIN</code> permissions in <code>tenant</code></li>
+<li>Removes <code>(tenant, kms)</code></li>
+</ul>
+</li>
+<li><strong>TODO: Remove Tenant, Top up billing balance</strong></li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="libraries"><a class="header" href="#libraries">Libraries</a></h1>
+<p>TODO: lukas/serban</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="content-objects"><a class="header" href="#content-objects">Content Objects</a></h1>
+<p>Content objects are the main way tenants store and retrieve data, globally referenced by <code>(TenantId, ConqId)</code>.
+They are created by storing data in a node, who calls <strong>CommitVersion</strong> with a digest of the data.
+Once the verison is commited, other nodes in the space can retrieve the content object.
+Once a sufficient number of nodes retrieve copies of the content object<sup class="footnote-reference"><a href="#1">1</a></sup>, the original authoring node submits a <strong>ConfirmVersion</strong> which marks the commit as finalized.
+Each content object also has a 'head' version which refers to the version that should be retrieved when a content object is referred to by its ID.</p>
+<p>In order to prevent nodes from creating arbitrary versions without permission of tenants, a tenant-signed version commit message (<code>VersionCommitMessage</code>) must be provided in the <strong>CommitVersion</strong> call.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>  VersionCommitMessage {
+    originator: ProviderId,
+    tenant_id: TenantId,
+    content_object_id: ContentObjectId,
+    version_id: VersionId,
+    tlp_size: #[compact] u64,
+    ts: u64,
+    set_head_on_finalize: bool,
+    kms_id: KMSId,
+  }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="content-object-lifecycle"><a class="header" href="#content-object-lifecycle">Content Object Lifecycle</a></h3>
+<pre class="mermaid">flowchart TB 
+  dc(Draft Created)
+  md(Modify Draft)
+  df(Draft Finalized)
+  cv(Version Commited)
+  vp(Version Publishing)
+  vf(Version Finalized)
+
+  dc --&gt;|tenant user creates draft on node| md
+  md ---&gt;|tenant user modifies draft| md
+  md --&gt;|tenant user finalizes draft| df
+  df --&gt;|node calls CommitVersion| cv
+  cv --&gt;|node starts publishing parts to other fabric nodes| vp
+  vp --&gt;|parts receieved other nodes, node calls FinalizeVersion| vf
+
+</pre>
+<h3 id="content-types"><a class="header" href="#content-types">Content Types</a></h3>
+<p>TODO: Discuss</p>
+<h3 id="content-object-blockchain-storage"><a class="header" href="#content-object-blockchain-storage">Content Object Blockchain Storage</a></h3>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>(TenantId, ContentObjectId) -&gt; {
+  head_version: Option&lt;VersionId&gt;,
+  version_count: u32,
+}
+(TenantId, ContentObjectId, VersionId) -&gt; {
+  originator: ProviderId,
+  tlp_size: #[compact] u64,
+  ts_committed: u64,
+  ts_finalized: Option&lt;u64&gt;,
+  set_head_on_finalize: bool,
+  kms_id: KMSId
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="content-object-blockchain-calls"><a class="header" href="#content-object-blockchain-calls">Content Object Blockchain Calls</a></h3>
+<ul>
+<li>
+<p><strong><code>CreateContentObject(origin: Origin, ten: TenantId, cobj: ContentObjectId)</code></strong></p>
+<ul>
+<li>Checks that <code>origin</code> has at least <code>CONTENT</code> permissions in <code>ten</code></li>
+<li>Stores the content object at <code>(ten, cobj)</code>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>  {
+    head_version: None,
+    version_count: 0,
+  }
+<span class="boring">}
+</span></code></pre></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong><code>CommitVersion(origin: Origin, tenant_signer: AccountId, vcm: VersionCommitMessage, vcm_sig: Signature)</code></strong></p>
+<ul>
+<li>Checks that <code>origin</code> has <code>NODE</code> level permission within <code>vcm.provider_id</code></li>
+<li>Checks that <code>tenant_signer</code> has <code>CONTENT</code> level permission within <code>vcm.tenant_id</code></li>
+<li>Checks that <code>vcm_sig</code> is a valid signature of the scale encoded <code>vcm</code> by <code>tenant_signer</code></li>
+<li>Increment <code>version_count</code> at <code>(vcm.tenant_id, vcm.content_object_id)</code></li>
+<li>Stores the version at  <code>(vcm.tenant_id, vcm.content_object_id, vcm.version_id)</code> 
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>  {
+    originator: vcm.originator,
+    tlp_size: vcm.tlp_size,
+    ts_committed: vcm.ts,
+    ts_finalized: None,
+    set_head_on_finalize: vcm.set_head_on_finalize,
+    kms_id: vcm.kms_id,
+  }
+<span class="boring">}
+</span></code></pre></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong><code>FinalizeVersion(origin: Origin, provider: ProviderId, ten: TenantId, cobj: ContentObjectId, ver: CObjVersionId, ts: u64)</code></strong></p>
+<ul>
+<li>Checks that <code>origin</code> has at least node level within <code>provider</code>.</li>
+<li>Retrieve the version metadata, <code>ver_meta</code>, stored at <code>(ten, cobj, ver)</code></li>
+<li>Checks that <code>provider</code> matches the <code>ver_meta.originator</code></li>
+<li>Checks that <code>ts</code> is a recent timestamp</li>
+<li>Sets <code>ver_meta.ts_finalized = Some(ts)</code></li>
+<li>If <code>ver_meta.set_head_on_finalize</code>, sets the <code>head_version</code> of the content object at <code>(ten, cobj)</code> to <code>ver</code></li>
+</ul>
+</li>
+<li>
+<p><strong><code>SetHeadVersion(origin: Origin, ten: TenantId, cobj: ContentObjectId, ver: Option&lt;VersionId&gt;)</code></strong></p>
+<ul>
+<li>Checks that <code>origin</code> has <code>CONTENT</code> level permissions within <code>ten</code></li>
+<li>Checks that <code>(ten, cobj, ver)</code> exists</li>
+<li>Sets the <code>head_version</code> at <code>(ten, cobj)</code> to <code>ver</code></li>
+</ul>
+</li>
+<li>
+<p><strong><code>DeleteVersion(origin: Origin, ten: TenantId, cobj: ContentObjectId, ver: VersionId)</code></strong></p>
+<ul>
+<li>Checks that <code>origin</code> has <code>CONTENT</code> level permissions within <code>ten</code></li>
+<li>Checks that <code>(ten, cobj, ver)</code> exists</li>
+<li>Checks that <code>head_version</code> at <code>(ten, cobj)</code> <strong>is not</strong> <code>ver</code></li>
+<li>Deletes the version stored at <code>(ten, cobj, ver)</code></li>
+<li>Decrements <code>version_count</code> at <code>(ten, cobj)</code></li>
+</ul>
+</li>
+<li>
+<p><strong><code>DeleteContentObject(origin: Origin, ten: TenantId, cobj: ContentObjId)</code></strong></p>
+<ul>
+<li>Checks that <code>origin</code> has <code>CONTENT</code> level permissions within <code>ten</code></li>
+<li>Checks that <code>version_count</code> is <code>0</code></li>
+<li>Deletes the content object at <code>(ten, cobj)</code></li>
+</ul>
+</li>
+</ul>
+<p><sup class="footnote-reference"><a href="#1">1</a></sup> <em>TODO:</em> Should also talk about partitioning and how we assert data is replicated</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="kms"><a class="header" href="#kms">KMS</a></h1>
+<p>TODO</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="data-hierarchy-and-key-prefixing"><a class="header" href="#data-hierarchy-and-key-prefixing">Data Hierarchy and Key Prefixing</a></h1>
+<p>Many of the entities in the system are scoped, meaning they only exist under another identity.
+Individually, they have the following IDs:</p>
+<table><thead><tr><th style="text-align: center">Entity</th><th>Identifier</th><th>Substrate Type</th></tr></thead><tbody>
+<tr><td style="text-align: center">Provider</td><td><code>ProviderId</code></td><td>10-byte array</td></tr>
+<tr><td style="text-align: center">Tenant</td><td><code>TenantId</code></td><td>10-byte array</td></tr>
+<tr><td style="text-align: center">Node</td><td><code>NodeId</code></td><td>10-byte array</td></tr>
+<tr><td style="text-align: center">Space</td><td><code>SpaceId</code></td><td>10-byte array</td></tr>
+<tr><td style="text-align: center">Content Object</td><td><code>CobjId</code></td><td>10-byte array</td></tr>
+<tr><td style="text-align: center">Content Object Version</td><td><code>CobjVersionId</code></td><td>32-byte array</td></tr>
+<tr><td style="text-align: center">KMS</td><td><code>KMSId</code></td><td>10-byte array</td></tr>
+</tbody></table>
+<p>But they are hierarchical. </p>
+<pre class="mermaid">flowchart TD
+  space(Space)
+  provider(Provider)
+  node(Node)
+  tenant(Tenant)
+  kms(KMS)
+  cobj(Content Object)
+  cobjv(Content Object Version)
+
+  space --&gt; provider
+  space --&gt; tenant
+
+  provider --&gt; node
+
+  tenant --&gt; kms
+  tenant --&gt; cobj
+  cobj --&gt; cobjv
+</pre>
+<p>Providers and tenants exist within spaces, KMSs exist within a tenancy, etc.</p>
+<h2 id="substrate--hierarchical-keys"><a class="header" href="#substrate--hierarchical-keys">Substrate &amp; Hierarchical keys</a></h2>
+<p>In substrate, we have two different ways of expressing these sorts of has-many relationships.</p>
+<h3 id="flat-ids-with-metadata"><a class="header" href="#flat-ids-with-metadata">Flat IDs with metadata</a></h3>
+<p>We can either store the parent in some metadata key-value map associated with the child, like </p>
+<pre><code>TenantId --&gt; TenantMetadata { space_id: SpaceId, ... }
+</code></pre>
+<p>In this case:</p>
+<ul>
+<li><code>TenantId</code>s are global: there's no way for the same <code>TenantId</code> to exist within multiple spaces. </li>
+<li>In order to list all the tenants within a space, an indexer is required.</li>
+<li>All you need to refer to a specific tenant is the <code>TenantId</code>, since the <code>SpaceId</code> is implied.</li>
+<li>Deleting a space becomes complicated:
+<ul>
+<li>The total number of tenants must be stored on the space: <code>SpaceId --&gt; SpaceMetadata { tenant_count: u32 }</code></li>
+<li>Each tenant must be manually deleted, and the <code>tenant_count</code> must be decremented on each delete</li>
+<li>Once the <code>tenant_count</code> reaches 0, all other space-related storage can be deleted</li>
+</ul>
+</li>
+</ul>
+<h3 id="nested-ids"><a class="header" href="#nested-ids">Nested IDs</a></h3>
+<p>Alternatively, we can choose to prefix the <code>TenantId</code> by the <code>SpaceId</code> anywhere that tenant data is stored, so we would get</p>
+<pre><code>(SpaceId, TenantId) --&gt; TenantMetadata { ... }
+</code></pre>
+<p>In this case:</p>
+<ul>
+<li>To refer to a tenant, both the <code>SpaceId</code> and <code>TenantId</code> must be given, since the <code>TenantId</code> is not unique across spaces</li>
+<li>Listing tenants is easy,</li>
+<li>Deleting the parent entity becomes much easier: 
+<ul>
+<li>In order to delete a space, all the keys under <code>(SpaceId, TenantId)</code> must be deleted as well</li>
+<li>On chain, we can do a key prefix delete which clears out all keys of the form <code>(SpaceId, ...)</code> (in RocksDb this sort of write is fast)</li>
+</ul>
+</li>
+</ul>
+<h2 id="current-architecture"><a class="header" href="#current-architecture">Current architecture</a></h2>
+<p>It is annoying to refer to certain entities by both their id and their parents' ids, so in cases where deletion may not be so common (such as that for a space), flat ids are used.</p>
+<p>Here is a complete list of how the IDs stored:</p>
+<table><thead><tr><th style="text-align: center">Entity</th><th>Complete Id</th></tr></thead><tbody>
+<tr><td style="text-align: center">Provider</td><td><code>ProviderId</code></td></tr>
+<tr><td style="text-align: center">Tenant</td><td><code>TenantId</code></td></tr>
+<tr><td style="text-align: center">Node</td><td><code>(ProviderId, NodeId)</code></td></tr>
+<tr><td style="text-align: center">Space</td><td><code>SpaceId</code></td></tr>
+<tr><td style="text-align: center">Content Object</td><td><code>(TenantId, ContentObjectId)</code></td></tr>
+<tr><td style="text-align: center">Content Object Version</td><td><code>(TenantId, ContentObjectId, ContentObjectVersion)</code></td></tr>
+<tr><td style="text-align: center">KMS</td><td><code>(TenantId, KMSId)</code></td></tr>
+</tbody></table>
+<p>All provider and tenant children use nested IDs. 
+Tenants and Providers use flat ids, since deleting a whole space should be considered very rare.
+Tenants and providers may be often be deleted, however, for governance reasons. 
+Some single blockchain call, then, needs to be able to delete an entire provider or entire tenancy.
+To do this, the keys prefix deletes are needed to clean up their data.</p>
+<h3 id="potential-alternative"><a class="header" href="#potential-alternative">Potential alternative</a></h3>
+<p>An alternative is this: instead of doing some sort of hierarchical delete, governance could store a flag called <code>governance_delete</code>, stored in the metadata of a provider or tenant. 
+Specific <code>governance_delete_*</code> methods could then exist on all children, who look up their parents, metadata, check that <code>governance_delete == true</code>, and delete the requested child.
+This would allow for using a flat id with metadata, while still having governance be able to delete a child.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="part-networking"><a class="header" href="#part-networking">Part Networking</a></h1>
+<p>TODO: serban</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="definitions"><a class="header" href="#definitions">Definitions</a></h1>
+<p>Here are some definitions of entities within the system</p>
+<table><thead><tr><th>Name</th><th>Description</th></tr></thead><tbody>
+<tr><td>Node</td><td>A server which stores and serves parts.</td></tr>
+<tr><td>Provider</td><td>An individual or organization which owns, secures, and operates nodes.</td></tr>
+<tr><td>Tenant</td><td>An individual or organization which owns content.</td></tr>
+<tr><td>Content</td><td>A versioned set of data which is owned by a tenant.</td></tr>
+<tr><td>Space</td><td>A group of providers and tenants, where providers agree to run nodes that serve content owned by a tenant according to a common set of rules.</td></tr>
+<tr><td>Part</td><td>A part is a sequence of bytes stored in the space, referenced by its hash.</td></tr>
+<tr><td>Content Object Version</td><td>A collection of parts created by a tenant, referenced by its hash.</td></tr>
+<tr><td>Content Object</td><td>A collection of versions.</td></tr>
+<tr><td>KMS</td><td>A tenant-owned server which holds keys for encrypting/decrypting content which the tenant stores in the space.</td></tr>
+</tbody></table>
+<p>The following entities are identified as follows:</p>
+<table><thead><tr><th style="text-align: center">Entity</th><th>Identifier</th><th>Substrate Type</th></tr></thead><tbody>
+<tr><td style="text-align: center">Provider</td><td><code>ProviderId</code></td><td>10-byte array</td></tr>
+<tr><td style="text-align: center">Node</td><td><code>NodeId</code></td><td>10-byte array<sup class="footnote-reference"><a href="#1">1</a></sup></td></tr>
+<tr><td style="text-align: center">Space</td><td><code>SpaceId</code></td><td>10-byte array</td></tr>
+<tr><td style="text-align: center">Content Object</td><td><code>ContentObjectId</code></td><td>10-byte array</td></tr>
+<tr><td style="text-align: center">Content Object Version</td><td><code>CObjVersionId</code></td><td>32-byte array</td></tr>
+<tr><td style="text-align: center">KMS</td><td><code>KMSId</code></td><td>10-byte array</td></tr>
+</tbody></table>
+<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
+<p>Could node id just be an unsigned 32-bit integer and do some round robin or mod-magic for assigning partitions?</p>
+</div>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        <script type="text/javascript" src="mermaid.min.js"></script>
+        <script type="text/javascript" src="mermaid-init.js"></script>
+        <script type="text/javascript">
+        window.addEventListener('load', function() {
+            MathJax.Hub.Register.StartupHook('End', function() {
+                window.setTimeout(window.print, 100);
+            });
+        });
+        </script>
+    </body>
+</html>
