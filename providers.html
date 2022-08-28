@@ -165,10 +165,7 @@ Providers also have a permission structure which can associated levels of privil
 <p>Keys with a higher level may set the permission level of any keys strictly below it. 
 For example, a key with root permission may give other keys admin level, but admin keys may not give other keys admin or change the permission level of a key at admin level.</p>
 <h3 id="provider-blockchain-storage"><a class="header" href="#provider-blockchain-storage">Provider Blockchain Storage</a></h3>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>(ProviderId) -&gt; {
+<pre><code class="language-rust">(ProviderId) -&gt; {
   space: SpaceId,
   root: AccountId,
 }
@@ -176,8 +173,7 @@ For example, a key with root permission may give other keys admin level, but adm
   pending: true,
   locator: BoundedString,
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 <h3 id="provider-blockchain-calls"><a class="header" href="#provider-blockchain-calls">Provider Blockchain Calls</a></h3>
 <p>In addition to setting permissions on keys, we have the following calls</p>
 <ul>
@@ -186,15 +182,11 @@ For example, a key with root permission may give other keys admin level, but adm
 <ul>
 <li>Checks <code>space</code> governance to see whether <code>origin</code> can create a provider</li>
 <li>Creates a provider at <code>prv</code> 
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{
+<pre><code class="language-rust">{
   space: space,
   root: origin,
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 </li>
 <li>Bonds some currency from <code>root</code> to <code>space</code> under <code>prv</code></li>
 </ul>
@@ -204,15 +196,11 @@ For example, a key with root permission may give other keys admin level, but adm
 <ul>
 <li>Checks that <code>origin</code> has at least <code>ADMIN</code> level in <code>prv</code></li>
 <li>Creates a node (note that it's marked as pending while it syncs up with other nodes)
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{
+<pre><code class="language-rust">{
   pending: true,
   locator: locator,
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 </li>
 <li>Registers <code>origin</code> to <code>prv</code> with <code>NODE</code> permission level <sup class="footnote-reference"><a href="#1">1</a></sup></li>
 </ul>

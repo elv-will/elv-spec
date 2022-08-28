@@ -190,10 +190,7 @@ Providers also have a permission structure which can associated levels of privil
 <p>Keys with a higher level may set the permission level of any keys strictly below it. 
 For example, a key with root permission may give other keys admin level, but admin keys may not give other keys admin or change the permission level of a key at admin level.</p>
 <h3 id="provider-blockchain-storage"><a class="header" href="#provider-blockchain-storage">Provider Blockchain Storage</a></h3>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>(ProviderId) -&gt; {
+<pre><code class="language-rust">(ProviderId) -&gt; {
   space: SpaceId,
   root: AccountId,
 }
@@ -201,8 +198,7 @@ For example, a key with root permission may give other keys admin level, but adm
   pending: true,
   locator: BoundedString,
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 <h3 id="provider-blockchain-calls"><a class="header" href="#provider-blockchain-calls">Provider Blockchain Calls</a></h3>
 <p>In addition to setting permissions on keys, we have the following calls</p>
 <ul>
@@ -211,15 +207,11 @@ For example, a key with root permission may give other keys admin level, but adm
 <ul>
 <li>Checks <code>space</code> governance to see whether <code>origin</code> can create a provider</li>
 <li>Creates a provider at <code>prv</code> 
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{
+<pre><code class="language-rust">{
   space: space,
   root: origin,
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 </li>
 <li>Bonds some currency from <code>root</code> to <code>space</code> under <code>prv</code></li>
 </ul>
@@ -229,15 +221,11 @@ For example, a key with root permission may give other keys admin level, but adm
 <ul>
 <li>Checks that <code>origin</code> has at least <code>ADMIN</code> level in <code>prv</code></li>
 <li>Creates a node (note that it's marked as pending while it syncs up with other nodes)
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{
+<pre><code class="language-rust">{
   pending: true,
   locator: locator,
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 </li>
 <li>Registers <code>origin</code> to <code>prv</code> with <code>NODE</code> permission level <sup class="footnote-reference"><a href="#1">1</a></sup></li>
 </ul>
@@ -290,18 +278,14 @@ For example, a key with root permission may give other keys admin level, but adm
 </li>
 </ul>
 <h3 id="tenant-blockchain-storage"><a class="header" href="#tenant-blockchain-storage">Tenant Blockchain Storage</a></h3>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>(TenantId) -&gt; {
+<pre><code class="language-rust">(TenantId) -&gt; {
   space: SpaceId,
   root: AccountId,
 }
 (TenantId, KMSId) -&gt; {
   locator: BoundedString,
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 <h3 id="tenant-blockchain-calls"><a class="header" href="#tenant-blockchain-calls">Tenant Blockchain Calls</a></h3>
 <ul>
 <li><strong><code>CreateTenant(origin: Origin, space: SpaceId, tenant: TenantId)</code></strong>
@@ -309,15 +293,11 @@ For example, a key with root permission may give other keys admin level, but adm
 <li>Checks <code>space</code> governance to see whether <code>origin</code> can create a tenant</li>
 <li>Creates <code>tenant</code> </li>
 </ul>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{
+<pre><code class="language-rust">{
   space: space,
   root: origin,
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 <ul>
 <li>Registers <code>origin</code> with <code>tenant</code> with <code>ADMIN</code> level </li>
 <li>Bonds some currency from <code>origin</code> to the <code>space</code> under <code>tenant</code></li>
@@ -328,14 +308,10 @@ For example, a key with root permission may give other keys admin level, but adm
 <li>Checks that <code>origin</code> has <code>ADMIN</code> permission for <code>tenant</code></li>
 <li>Creates a KMS at <code>(tenant, kms)</code></li>
 </ul>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>  {
+<pre><code class="language-rust">  {
     locator: locator,
   }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 </li>
 <li><strong><code>RemoveKMS(origin: Origin, tenant: TenantId, kms: KMSId)</code></strong> removes a node
 <ul>
@@ -354,10 +330,7 @@ Once the verison is commited, other nodes in the space can retrieve the content 
 Once a sufficient number of nodes retrieve copies of the content object<sup class="footnote-reference"><a href="#1">1</a></sup>, the original authoring node submits a <strong>ConfirmVersion</strong> which marks the commit as finalized.
 Each content object also has a 'head' version which refers to the version that should be retrieved when a content object is referred to by its ID.</p>
 <p>In order to prevent nodes from creating arbitrary versions without permission of tenants, a tenant-signed version commit message (<code>VersionCommitMessage</code>) must be provided in the <strong>CommitVersion</strong> call.</p>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>  VersionCommitMessage {
+<pre><code class="language-rust">  VersionCommitMessage {
     originator: ProviderId,
     tenant_id: TenantId,
     content_object_id: ContentObjectId,
@@ -367,8 +340,7 @@ Each content object also has a 'head' version which refers to the version that s
     set_head_on_finalize: bool,
     kms_id: KMSId,
   }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 <h3 id="content-object-lifecycle"><a class="header" href="#content-object-lifecycle">Content Object Lifecycle</a></h3>
 <pre class="mermaid">flowchart TB 
   dc(Draft Created)
@@ -389,10 +361,7 @@ Each content object also has a 'head' version which refers to the version that s
 <h3 id="content-types"><a class="header" href="#content-types">Content Types</a></h3>
 <p>TODO: Discuss</p>
 <h3 id="content-object-blockchain-storage"><a class="header" href="#content-object-blockchain-storage">Content Object Blockchain Storage</a></h3>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>(TenantId, ContentObjectId) -&gt; {
+<pre><code class="language-rust">(TenantId, ContentObjectId) -&gt; {
   head_version: Option&lt;VersionId&gt;,
   version_count: u32,
 }
@@ -404,8 +373,7 @@ Each content object also has a 'head' version which refers to the version that s
   set_head_on_finalize: bool,
   kms_id: KMSId
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 <h3 id="content-object-blockchain-calls"><a class="header" href="#content-object-blockchain-calls">Content Object Blockchain Calls</a></h3>
 <ul>
 <li>
@@ -413,15 +381,11 @@ Each content object also has a 'head' version which refers to the version that s
 <ul>
 <li>Checks that <code>origin</code> has at least <code>CONTENT</code> permissions in <code>ten</code></li>
 <li>Stores the content object at <code>(ten, cobj)</code>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>  {
+<pre><code class="language-rust">  {
     head_version: None,
     version_count: 0,
   }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 </li>
 </ul>
 </li>
@@ -433,10 +397,7 @@ Each content object also has a 'head' version which refers to the version that s
 <li>Checks that <code>vcm_sig</code> is a valid signature of the scale encoded <code>vcm</code> by <code>tenant_signer</code></li>
 <li>Increment <code>version_count</code> at <code>(vcm.tenant_id, vcm.content_object_id)</code></li>
 <li>Stores the version at  <code>(vcm.tenant_id, vcm.content_object_id, vcm.version_id)</code> 
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>  {
+<pre><code class="language-rust">  {
     originator: vcm.originator,
     tlp_size: vcm.tlp_size,
     ts_committed: vcm.ts,
@@ -444,8 +405,7 @@ Each content object also has a 'head' version which refers to the version that s
     set_head_on_finalize: vcm.set_head_on_finalize,
     kms_id: vcm.kms_id,
   }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 </li>
 </ul>
 </li>

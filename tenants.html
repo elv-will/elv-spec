@@ -165,18 +165,14 @@
 </li>
 </ul>
 <h3 id="tenant-blockchain-storage"><a class="header" href="#tenant-blockchain-storage">Tenant Blockchain Storage</a></h3>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>(TenantId) -&gt; {
+<pre><code class="language-rust">(TenantId) -&gt; {
   space: SpaceId,
   root: AccountId,
 }
 (TenantId, KMSId) -&gt; {
   locator: BoundedString,
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 <h3 id="tenant-blockchain-calls"><a class="header" href="#tenant-blockchain-calls">Tenant Blockchain Calls</a></h3>
 <ul>
 <li><strong><code>CreateTenant(origin: Origin, space: SpaceId, tenant: TenantId)</code></strong>
@@ -184,15 +180,11 @@
 <li>Checks <code>space</code> governance to see whether <code>origin</code> can create a tenant</li>
 <li>Creates <code>tenant</code> </li>
 </ul>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{
+<pre><code class="language-rust">{
   space: space,
   root: origin,
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 <ul>
 <li>Registers <code>origin</code> with <code>tenant</code> with <code>ADMIN</code> level </li>
 <li>Bonds some currency from <code>origin</code> to the <code>space</code> under <code>tenant</code></li>
@@ -203,14 +195,10 @@
 <li>Checks that <code>origin</code> has <code>ADMIN</code> permission for <code>tenant</code></li>
 <li>Creates a KMS at <code>(tenant, kms)</code></li>
 </ul>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>  {
+<pre><code class="language-rust">  {
     locator: locator,
   }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 </li>
 <li><strong><code>RemoveKMS(origin: Origin, tenant: TenantId, kms: KMSId)</code></strong> removes a node
 <ul>

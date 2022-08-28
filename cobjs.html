@@ -143,10 +143,7 @@ Once the verison is commited, other nodes in the space can retrieve the content 
 Once a sufficient number of nodes retrieve copies of the content object<sup class="footnote-reference"><a href="#1">1</a></sup>, the original authoring node submits a <strong>ConfirmVersion</strong> which marks the commit as finalized.
 Each content object also has a 'head' version which refers to the version that should be retrieved when a content object is referred to by its ID.</p>
 <p>In order to prevent nodes from creating arbitrary versions without permission of tenants, a tenant-signed version commit message (<code>VersionCommitMessage</code>) must be provided in the <strong>CommitVersion</strong> call.</p>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>  VersionCommitMessage {
+<pre><code class="language-rust">  VersionCommitMessage {
     originator: ProviderId,
     tenant_id: TenantId,
     content_object_id: ContentObjectId,
@@ -156,8 +153,7 @@ Each content object also has a 'head' version which refers to the version that s
     set_head_on_finalize: bool,
     kms_id: KMSId,
   }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 <h3 id="content-object-lifecycle"><a class="header" href="#content-object-lifecycle">Content Object Lifecycle</a></h3>
 <pre class="mermaid">flowchart TB 
   dc(Draft Created)
@@ -178,10 +174,7 @@ Each content object also has a 'head' version which refers to the version that s
 <h3 id="content-types"><a class="header" href="#content-types">Content Types</a></h3>
 <p>TODO: Discuss</p>
 <h3 id="content-object-blockchain-storage"><a class="header" href="#content-object-blockchain-storage">Content Object Blockchain Storage</a></h3>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>(TenantId, ContentObjectId) -&gt; {
+<pre><code class="language-rust">(TenantId, ContentObjectId) -&gt; {
   head_version: Option&lt;VersionId&gt;,
   version_count: u32,
 }
@@ -193,8 +186,7 @@ Each content object also has a 'head' version which refers to the version that s
   set_head_on_finalize: bool,
   kms_id: KMSId
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 <h3 id="content-object-blockchain-calls"><a class="header" href="#content-object-blockchain-calls">Content Object Blockchain Calls</a></h3>
 <ul>
 <li>
@@ -202,15 +194,11 @@ Each content object also has a 'head' version which refers to the version that s
 <ul>
 <li>Checks that <code>origin</code> has at least <code>CONTENT</code> permissions in <code>ten</code></li>
 <li>Stores the content object at <code>(ten, cobj)</code>
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>  {
+<pre><code class="language-rust">  {
     head_version: None,
     version_count: 0,
   }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 </li>
 </ul>
 </li>
@@ -222,10 +210,7 @@ Each content object also has a 'head' version which refers to the version that s
 <li>Checks that <code>vcm_sig</code> is a valid signature of the scale encoded <code>vcm</code> by <code>tenant_signer</code></li>
 <li>Increment <code>version_count</code> at <code>(vcm.tenant_id, vcm.content_object_id)</code></li>
 <li>Stores the version at  <code>(vcm.tenant_id, vcm.content_object_id, vcm.version_id)</code> 
-<pre><pre class="playground"><code class="language-rust">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>  {
+<pre><code class="language-rust">  {
     originator: vcm.originator,
     tlp_size: vcm.tlp_size,
     ts_committed: vcm.ts,
@@ -233,8 +218,7 @@ Each content object also has a 'head' version which refers to the version that s
     set_head_on_finalize: vcm.set_head_on_finalize,
     kms_id: vcm.kms_id,
   }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 </li>
 </ul>
 </li>
